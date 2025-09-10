@@ -20,6 +20,10 @@
 @prefix teamwork: <http://topbraid.org/teamwork#> .
 @prefix test: <http://example.org/corpora/test#> .
 
+test:sample
+  a corpus:Document ;
+  corpus:title "sample" ;
+.
 <http://topbraid.org/corpus-projects#CorpusProject>
   rdfs:subClassOf teamwork:Vocabulary ;
 .

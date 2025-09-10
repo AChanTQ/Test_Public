@@ -1,0 +1,40 @@
+# baseURI: urn:x-evn-master:sample_corpora
+
+# collectionId: sample_corpora
+
+# collectionType: Corpus
+
+@prefix corpus: <http://topbraid.org/corpus#> .
+@prefix dash: <http://datashapes.org/dash#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix edg: <http://edg.topbraid.solutions/model/> .
+@prefix graphql: <http://datashapes.org/graphql#> .
+@prefix metadata: <http://topbraid.org/metadata#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sample_corpora: <http://example.org/corpora/sample_corpora#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix skosxl: <http://www.w3.org/2008/05/skos-xl#> .
+@prefix teamwork: <http://topbraid.org/teamwork#> .
+
+sample_corpora:test
+  a corpus:Document ;
+  corpus:title "test" ;
+.
+<http://topbraid.org/corpus-projects#CorpusProject>
+  rdfs:subClassOf teamwork:Vocabulary ;
+.
+<urn:x-evn-master:sample_corpora>
+  a corpus:DefaultCorpus ;
+  a <http://topbraid.org/corpus-projects#CorpusProject> ;
+  a teamwork:Vocabulary ;
+  a owl:Ontology ;
+  corpus:cssKeepSelector "body" ;
+  metadata:status metadata:UnderDevelopmentStatus ;
+  <http://topbraid.org/swa#defaultNamespace> "http://example.org/corpora/sample_corpora#" ;
+  rdfs:label "sample_corpora" ;
+  owl:imports <http://topbraid.org/corpus> ;
+.

@@ -1,0 +1,2025 @@
+# baseURI: urn:x-evn-master:geography_ontology
+
+BASE   <urn:x-evn-master:geography_ontology>
+PREFIX metadata: <http://topbraid.org/metadata#>
+PREFIX skosxl: <http://www.w3.org/2008/05/skos-xl#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX g: <http://topquadrant.com/ns/examples/geography#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX tbgeo: <http://topbraid.org/tbgeo#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX dash: <http://datashapes.org/dash#>
+PREFIX swa: <http://topbraid.org/swa#>
+
+<http://edg.topbraid.solutions/model/EDGenumeratedValue>
+        rdf:type    <http://edg.topbraid.solutions/model/EnumerationClass>;
+        rdfs:label  "EDG Enumeration (system)" .
+
+<urn:x-evn-master:geography_ontology>
+        owl:imports           <http://topbraid.org/teamworkconstraints>;
+        owl:imports           <http://datashapes.org/graphql>;
+        owl:imports           <http://topbraid.org/tbgeo>;
+        owl:imports           <http://topbraid.org/skos-xl.shapes>;
+        owl:imports           <http://datashapes.org/dash>;
+        owl:imports           <http://topbraid.org/skos.shapes>;
+        owl:imports           <http://topbraid.org/sheets>;
+        owl:imports           <http://topbraid.org/git>;
+        owl:imports           <urn:x-evn-master:beb_enumerations>;
+        rdf:type              owl:Ontology;
+        swa:defaultNamespace  "http://topquadrant.com/ns/examples/geography#";
+        rdfs:label            "TopBraid Examples Geo Ontology";
+        metadata:status       metadata:UnderDevelopmentStatus;
+        rdfs:comment          "Schema definition for Geography Taxonomy.";
+        <http://datashapes.org/graphql#publicClass>  skos:Concept;
+        sh:declare            _:b0;
+        sh:declare            _:b1;
+        <http://edg.topbraid.solutions/model/subjectArea>  <urn:x-tb-governance:Business_Area_1>;
+        <http://edg.topbraid.solutions/model/dataSteward>  <urn:x-tb-users:manager> .
+
+_:b2    sh:select    "\n\t\tSELECT ?scale\n\t\tWHERE {\n\t\t\t$this g:wikidataCity/wdt:P1082 ?population .\n\t\t\tBIND (IF(?population > 1000000, 4, IF(?population > 500000, 3, IF(?population > 100000, 2, 1))) AS ?scale) .\n\t\t}";
+        sh:prefixes  <urn:x-evn-master:geography_ontology> .
+
+g:Country-wikidataCountry
+        rdf:type              sh:PropertyShape;
+        sh:order              "20"^^xsd:decimal;
+        dash:detailsEndpoint  "https://query.wikidata.org/sparql";
+        sh:name               "wikidata country";
+        sh:nodeKind           sh:IRI;
+        sh:description        "A reference to a wikidata entity for the country.";
+        sh:node               g:WikidataCountry;
+        sh:group              skos:MatchingRelationshipsPropertyGroup;
+        sh:path               g:wikidataCountry;
+        sh:maxCount           1 .
+
+g:WikidataCountry  rdf:type  sh:NodeShape;
+        rdfs:label    "Wikidata country";
+        rdfs:comment  "A node shape defining the properties of Wikidata countries that we are interested in. Only those properties will be downloaded from the SPARQL endpoint, if requested.";
+        sh:property   _:b3;
+        sh:property   _:b4;
+        sh:property   _:b5 .
+
+g:wikidataCountry  rdf:type  rdf:Property;
+        rdfs:label  "wikidata country" .
+
+_:b6    sh:path  _:b7 .
+
+_:b7    sh:inversePath  skos:broader .
+
+_:b8    sh:then  "blue";
+        sh:if    _:b9;
+        sh:else  "red" .
+
+_:b9    sh:exists  _:b10 .
+
+g:Country-population  rdf:type  sh:PropertyShape;
+        sh:order        "50"^^xsd:decimal;
+        sh:name         "population";
+        sh:description  "The number of inhabitants of a country.";
+        sh:group        g:Geopolitical_Characteristics;
+        sh:path         g:population;
+        sh:maxCount     1;
+        sh:values       _:b11;
+        sh:datatype     xsd:integer .
+
+_:b11   xsd:integer  _:b12 .
+
+g:Geopolitical_Characteristics
+        rdf:type    sh:PropertyGroup;
+        rdfs:label  "Geopolitical Characteristics";
+        sh:order    1.3 .
+
+g:population  rdf:type  rdf:Property;
+        rdfs:label  "population" .
+
+g:City-fillOpacity  rdf:type  sh:PropertyShape;
+        sh:order        "2"^^xsd:decimal;
+        sh:name         "fill opacity";
+        sh:description  "Dynamically computed to be always 1.";
+        sh:group        tbgeo:MapRenderingPropertyGroup;
+        sh:path         tbgeo:fillOpacity;
+        sh:maxCount     1;
+        sh:values       1.0;
+        sh:datatype     xsd:decimal .
+
+_:b10   sh:path  _:b13 .
+
+_:b14   rdf:type        sh:PropertyShape;
+        sh:name         "population (wikidata)";
+        sh:description  "The wikidata property representing the population of a place.";
+        sh:path         wdt:P1082;
+        sh:datatype     xsd:decimal .
+
+g:Prefecture  rdfs:subClassOf  g:GeoConcept;
+        rdf:type         sh:NodeShape;
+        rdf:type         owl:Class;
+        skos:prefLabel   "Prefecture"@en .
+
+g:GeoConcept  rdfs:subClassOf  skos:Concept;
+        rdfs:subClassOf  tbgeo:MapContext;
+        rdfs:subClassOf  geo:SpatialThing;
+        rdf:type         sh:NodeShape;
+        rdf:type         owl:Class;
+        rdfs:label       "Geografia Koncepcja"@pl;
+        rdfs:label       "География Концепция"@ru;
+        rdfs:label       "Geo concept"@en;
+        rdfs:label       "Geographie Konzept"@de;
+        rdfs:label       "Géographie Concept"@fr;
+        rdfs:label       "Geografía Concept"@es;
+        sh:property      g:GeoConcept-mapFeatures;
+        sh:property      g:GeoConcept-webLink;
+        sh:property      g:GeoConcept-areaKM;
+        sh:property      g:GeoConcept-population;
+        sh:property      g:GeoConcept-image .
+
+g:City  rdfs:subClassOf  g:GeoConcept;
+        rdf:type         sh:NodeShape;
+        rdf:type         owl:Class;
+        rdfs:label       "Ville"@fr;
+        rdfs:label       "City"@en;
+        rdfs:label       "Сити"@ru;
+        rdfs:label       "Miasto"@pl;
+        rdfs:label       "Stadt"@de;
+        rdfs:label       "Ciudad"@es;
+        sh:property      g:City-fillOpacity;
+        sh:property      g:City-capital-inverse;
+        sh:property      g:City-fillColor;
+        sh:property      g:City-wikidataCity;
+        sh:property      g:City-population;
+        sh:property      g:City-symbolScale;
+        sh:property      g:City-symbolPath .
+
+g:City-capital-inverse
+        rdf:type  sh:PropertyShape;
+        sh:name   "capital of";
+        sh:group  g:Geopolitical_Characteristics;
+        sh:path   _:b15;
+        sh:class  g:GeoConcept .
+
+g:City-fillColor  rdf:type  sh:PropertyShape;
+        sh:name         "fill color";
+        sh:description  "Dynamically computed to be either red or blue depending on whether the city is a capital.";
+        sh:group        tbgeo:MapRenderingPropertyGroup;
+        sh:path         tbgeo:fillColor;
+        sh:maxCount     1;
+        sh:values       _:b8;
+        sh:datatype     xsd:string .
+
+g:City-wikidataCity  rdf:type  sh:PropertyShape;
+        sh:order              "20"^^xsd:decimal;
+        dash:detailsEndpoint  "https://query.wikidata.org/sparql";
+        sh:name               "wikidata city";
+        sh:nodeKind           sh:IRI;
+        sh:description        "A reference to a wikidata entity for the city.";
+        sh:node               g:WikidataCity;
+        sh:group              skos:MatchingRelationshipsPropertyGroup;
+        sh:path               g:wikidataCity;
+        sh:maxCount           1 .
+
+g:City-population  rdf:type  sh:PropertyShape;
+        sh:order        "3"^^xsd:decimal;
+        sh:name         "population";
+        sh:description  "A city's population is derived from the population of the corresponding Wikidata entry.";
+        sh:group        g:Geopolitical_Characteristics;
+        sh:path         g:population;
+        sh:maxCount     1;
+        sh:values       _:b16;
+        sh:datatype     xsd:integer .
+
+g:City-symbolScale  rdf:type  sh:PropertyShape;
+        sh:name         "symbol scale";
+        sh:description  "Dynamically computes the size of the circle depending on the City's population.";
+        sh:group        tbgeo:MapRenderingPropertyGroup;
+        sh:path         tbgeo:symbolScale;
+        sh:maxCount     1;
+        sh:values       _:b2 .
+
+g:City-symbolPath  rdf:type  sh:PropertyShape;
+        sh:name         "symbol path";
+        sh:description  "Dynamically computed as a circle.";
+        sh:group        tbgeo:MapRenderingPropertyGroup;
+        sh:path         tbgeo:symbolPath;
+        sh:maxCount     1;
+        sh:values       "m -3,0 a 3,3 0 1,0 6,0 a 3,3 0 1,0 -6,0";
+        sh:datatype     xsd:string .
+
+g:language  rdf:type  owl:DatatypeProperty;
+        rdfs:label   "язык"@ru;
+        rdfs:label   "sprache"@de;
+        rdfs:label   "langue"@fr;
+        rdfs:label   "language"@en;
+        rdfs:label   "język"@pl;
+        rdfs:label   "idioma"@es;
+        rdfs:range   xsd:string;
+        rdfs:domain  g:Country .
+
+g:Country  rdfs:subClassOf  g:GeoConcept;
+        rdf:type         sh:NodeShape;
+        rdf:type         owl:Class;
+        rdfs:label       "страна"@ru;
+        rdfs:label       "Kraj"@pl;
+        rdfs:label       "País"@es;
+        rdfs:label       "Country"@en;
+        rdfs:label       "Pays"@fr;
+        rdfs:label       "Land"@de;
+        sh:property      g:Country-wikidataCountry;
+        sh:property      g:Country-population;
+        sh:property      g:Country-flag;
+        sh:property      g:Country-isoCountryCode2;
+        sh:property      g:Country-capital;
+        sh:property      g:Country-callingCode;
+        sh:property      g:Country-language;
+        sh:property      g:Country-isoCountryCode3 .
+
+g:Province  rdfs:subClassOf  g:GeoConcept;
+        rdf:type         sh:NodeShape;
+        rdf:type         owl:Class;
+        rdfs:label       "провинция"@ru;
+        rdfs:label       "Prowincja"@pl;
+        rdfs:label       "Provinz"@de;
+        rdfs:label       "Provincia"@es;
+        rdfs:label       "Province"@fr;
+        rdfs:label       "Province"@en .
+
+_:b17   sh:path   wdt:P1082;
+        sh:nodes  _:b18 .
+
+_:b18   sh:path  g:wikidataCountry .
+
+g:Country-flag  rdf:type   sh:PropertyShape;
+        rdfs:comment       "The values of this property are basically copied over from the corresponding property P41 at the Wikidata entity that is linked to this country.";
+        sh:order           "100"^^xsd:decimal;
+        sh:nodeKind        sh:IRI;
+        sh:path            g:flag;
+        sh:values          _:b19;
+        dash:propertyRole  dash:IconRole .
+
+_:b19   sh:path   wdt:P41;
+        sh:nodes  _:b20 .
+
+g:flag  rdf:type      rdf:Property;
+        rdfs:label    "flag";
+        rdfs:comment  "The flag of the country, as delivered by Wikidata." .
+
+g:Concepts  rdf:type  sh:PropertyGroup;
+        rdfs:label  "Concepts";
+        sh:order    1.5 .
+
+g:WikidataCity  rdf:type  sh:NodeShape;
+        rdfs:label    "Wikidata city";
+        rdfs:comment  "A node shape defining the properties of Wikidata cities that we are interested in. Only those properties will be downloaded from the SPARQL endpoint, if requested.";
+        sh:property   _:b14;
+        sh:property   _:b21 .
+
+g:callingCode  rdf:type  owl:DatatypeProperty;
+        rdfs:label   "вызывающий код"@ru;
+        rdfs:label   "telefonvorwahl"@de;
+        rdfs:label   "telefoniczny kod"@pl;
+        rdfs:label   "l'appel de code"@fr;
+        rdfs:label   "código de llamada"@es;
+        rdfs:label   "calling code"@en;
+        rdfs:range   xsd:integer;
+        rdfs:domain  g:Country .
+
+g:Country-isoCountryCode2
+        rdf:type           sh:PropertyShape;
+        sh:path            g:isoCountryCode2;
+        sh:maxCount        1;
+        sh:datatype        xsd:string;
+        dash:propertyRole  dash:IDRole .
+
+g:isoCountryCode2  rdf:type  owl:DatatypeProperty;
+        rdfs:label    "ISO ALPHA-2 country code";
+        rdfs:comment  "From 2-letter iso code from ISO 30166.";
+        rdfs:range    xsd:string;
+        rdfs:domain   g:Country .
+
+g:Location  rdf:type  sh:PropertyGroup;
+        rdfs:label  "Location";
+        sh:order    1.7 .
+
+g:GeoConcept-mapFeatures
+        rdf:type        sh:PropertyShape;
+        sh:name         "map features";
+        sh:description  "Computes the features to show on Context Maps. The features will simply be the narrower concepts.";
+        sh:path         tbgeo:mapFeatures;
+        sh:values       _:b6;
+        sh:class        g:GeoConcept;
+        dash:hidden     true .
+
+skosxl:Label-altLabel-inverse
+        rdf:type  sh:PropertyShape;
+        sh:name   "alternative label for";
+        sh:group  g:Concepts;
+        sh:path   _:b22;
+        sh:class  skos:Concept .
+
+skos:Concept  sh:property  skos:Concept-Test;
+        sh:property  skos:Concept-test;
+        sh:property  skos:Concept-Definition2 .
+
+_:b22   sh:inversePath  skosxl:altLabel .
+
+_:b23   rdf:rest   rdf:nil;
+        rdf:first  wdt:P1082 .
+
+g:isoCountryCode3  rdf:type  owl:DatatypeProperty;
+        rdfs:label    "ISO ALPHA-3 country code";
+        rdfs:comment  "3-letter iso code from United Nations Statistics Division.";
+        rdfs:range    xsd:string;
+        rdfs:domain   g:Country .
+
+g:Continent  rdfs:subClassOf  g:GeoConcept;
+        rdf:type         sh:NodeShape;
+        rdf:type         owl:Class;
+        rdfs:label       "континент"@ru;
+        rdfs:label       "Kontynent"@pl;
+        rdfs:label       "Kontinent"@de;
+        rdfs:label       "Continente"@es;
+        rdfs:label       "Continent"@fr;
+        rdfs:label       "Continent"@en .
+
+_:b16   sh:path  _:b24 .
+
+_:b24   rdf:rest   _:b23;
+        rdf:first  g:wikidataCity .
+
+_:b20   sh:path  g:wikidataCountry .
+
+_:b3    rdf:type        sh:PropertyShape;
+        sh:name         "flag";
+        sh:nodeKind     sh:IRI;
+        sh:description  "An image of the country's flag.";
+        sh:path         wdt:P41 .
+
+_:b4    rdf:type        sh:PropertyShape;
+        sh:name         "population (wikidata)";
+        sh:description  "The wikidata property representing the population of a place.";
+        sh:path         wdt:P1082;
+        sh:datatype     xsd:decimal .
+
+g:GeoConcept-webLink  rdf:type  sh:PropertyShape;
+        sh:order           "6"^^xsd:decimal;
+        sh:name            "web link";
+        sh:group           skos:LabelsAndDescriptionPropertyGroup;
+        sh:path            g:webLink;
+        sh:datatype        xsd:anyURI;
+        dash:propertyRole  dash:KeyInfoRole .
+
+g:DurationShape-effectiveTo
+        rdf:type     sh:PropertyShape;
+        sh:name      "effective to";
+        sh:path      g:effectiveTo;
+        sh:maxCount  1;
+        sh:datatype  xsd:date .
+
+g:State  rdfs:subClassOf  g:GeoConcept;
+        rdf:type         sh:NodeShape;
+        rdf:type         owl:Class;
+        rdfs:label       "Staat"@de;
+        rdfs:label       "Stan"@pl;
+        rdfs:label       "State"@en;
+        rdfs:label       "Êtat"@fr;
+        rdfs:label       "государство"@ru;
+        rdfs:label       "Estado"@es;
+        sh:property      g:State-capital .
+
+g:State-capital  rdf:type  sh:PropertyShape;
+        sh:group  g:Geopolitical_Characteristics;
+        sh:path   g:capital;
+        sh:class  g:City .
+
+g:Country-capital  rdf:type  sh:PropertyShape;
+        sh:group           g:Geopolitical_Characteristics;
+        sh:path            g:capital;
+        dash:propertyRole  dash:KeyInfoRole;
+        sh:class           g:City;
+        dash:reifiableBy   g:DateDurationShape .
+
+g:DateDurationShape  rdf:type  sh:NodeShape;
+        rdfs:label   "Date duration shape";
+        sh:property  g:DurationShape-effectiveTo;
+        sh:property  g:DurationShape-effectiveFrom .
+
+g:capital  rdf:type  owl:ObjectProperty;
+        rdfs:label   "капитал"@ru;
+        rdfs:label   "kapitał"@pl;
+        rdfs:label   "hauptstadt"@de;
+        rdfs:label   "capital"@fr;
+        rdfs:label   "capital"@es;
+        rdfs:label   "capital"@en;
+        rdfs:range   g:City;
+        rdfs:domain  g:Country .
+
+_:b21   rdf:type        sh:PropertyShape;
+        sh:description  "The name(s) in various languages of a wikidata city.";
+        sh:path         rdfs:label;
+        sh:or           dash:StringOrLangString .
+
+_:b15   sh:inversePath  g:capital .
+
+_:b13   sh:inversePath  g:capital .
+
+skosxl:Label  sh:property  skosxl:Label-altLabel-inverse .
+
+g:Country-callingCode
+        rdf:type     sh:PropertyShape;
+        sh:group     g:Geopolitical_Characteristics;
+        sh:path      g:callingCode;
+        sh:maxCount  1;
+        sh:datatype  xsd:integer .
+
+g:Country-language  rdf:type  sh:PropertyShape;
+        sh:group     g:Geopolitical_Characteristics;
+        sh:path      g:language;
+        sh:datatype  xsd:string .
+
+g:Country-isoCountryCode3
+        rdf:type           sh:PropertyShape;
+        sh:path            g:isoCountryCode3;
+        sh:maxCount        1;
+        sh:datatype        xsd:string;
+        dash:propertyRole  dash:IDRole .
+
+_:b12   rdf:rest   rdf:nil;
+        rdf:first  _:b17 .
+
+g:GeoConcept-areaKM  rdf:type  sh:PropertyShape;
+        sh:group     g:Geopolitical_Characteristics;
+        sh:path      g:areaKM;
+        sh:maxCount  1;
+        sh:datatype  xsd:decimal .
+
+g:areaKM  rdf:type   owl:DatatypeProperty;
+        rdfs:label   "площадь"@ru;
+        rdfs:label   "zona (KM)"@es;
+        rdfs:label   "région (KM)"@fr;
+        rdfs:label   "obszar (KM)"@pl;
+        rdfs:label   "bereich (KM)"@de;
+        rdfs:label   "area (KM)"@en;
+        rdfs:range   xsd:decimal;
+        rdfs:domain  g:GeoConcept .
+
+g:DurationShape-effectiveFrom
+        rdf:type     sh:PropertyShape;
+        sh:name      "effective from";
+        sh:path      g:effectiveFrom;
+        sh:maxCount  1;
+        sh:datatype  xsd:date .
+
+_:b5    rdf:type        sh:PropertyShape;
+        sh:description  "The name(s) in various languages of a wikidata country.";
+        sh:path         rdfs:label;
+        sh:or           dash:StringOrLangString .
+
+g:GeoConcept-population
+        rdf:type        sh:PropertyShape;
+        sh:order        "1"^^xsd:decimal;
+        sh:name         "population";
+        sh:description  "The number of inhabitants (often a rough estimate).";
+        sh:group        g:Geopolitical_Characteristics;
+        sh:path         g:population;
+        sh:maxCount     1;
+        sh:datatype     xsd:integer .
+
+g:GeoConcept-image  rdf:type  sh:PropertyShape;
+        sh:order           "7"^^xsd:decimal;
+        sh:name            "image";
+        sh:description     "The URL of an image for the concept.";
+        sh:group           skos:LabelsAndDescriptionPropertyGroup;
+        sh:path            g:image;
+        sh:maxCount        1;
+        sh:datatype        xsd:anyURI;
+        dash:propertyRole  dash:KeyInfoRole;
+        dash:viewer        dash:ImageViewer .
+
+g:Territory  rdfs:subClassOf  g:GeoConcept;
+        rdf:type         sh:NodeShape;
+        rdf:type         owl:Class;
+        rdfs:label       "территория"@ru;
+        rdfs:label       "Terytorium"@pl;
+        rdfs:label       "Territory"@en;
+        rdfs:label       "Territorio"@es;
+        rdfs:label       "Territoire"@fr;
+        rdfs:label       "Gebiet"@de .
+
+g:Island  rdfs:subClassOf  g:GeoConcept;
+        rdf:type         sh:NodeShape;
+        rdf:type         owl:Class;
+        rdfs:label       "остров"@ru;
+        rdfs:label       "Île"@fr;
+        rdfs:label       "Wyspa"@pl;
+        rdfs:label       "Island"@en;
+        rdfs:label       "Isla"@es;
+        rdfs:label       "Insel"@de .
+
+_:b0    sh:prefix     "wdt";
+        sh:namespace  "http://www.wikidata.org/prop/direct/"^^xsd:anyURI .
+
+_:b1    sh:prefix     "g";
+        sh:namespace  "http://topquadrant.com/ns/examples/geography#"^^xsd:anyURI .
+
+<http://edg.topbraid.solutions/model/EnvironmentType>
+        rdf:type    <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label  "Environment type";
+        <http://edg.topbraid.solutions/model/acronym>  "ENVTYPE" .
+
+skos:Concept-hasTopConcept-inverse
+        sh:or   _:b25 .
+
+_:b25   rdf:rest   _:b26;
+        rdf:first  _:b27 .
+
+_:b27   sh:class  geo:SpatialThing .
+
+_:b26   rdf:rest   rdf:nil;
+        rdf:first  _:b28 .
+
+_:b28   sh:class  skos:Collection .
+
+skos:Concept-Test  rdf:type  sh:PropertyShape;
+        sh:name   "Test";
+        sh:path   g:Test;
+        sh:or     _:b29 .
+
+skos:Concept-test  rdf:type  sh:PropertyShape;
+        sh:order     6.0;
+        sh:name      "test";
+        sh:nodeKind  sh:IRI;
+        sh:group     skos:LabelsAndDescriptionPropertyGroup;
+        sh:path      g:test;
+        sh:or        _:b30 .
+
+g:test  rdfs:subClassOf  skos:ConceptScheme;
+        rdf:type         sh:NodeShape;
+        rdf:type         owl:Class;
+        rdfs:label       "test" .
+
+_:b30   rdf:rest   _:b31;
+        rdf:first  _:b32 .
+
+_:b32   sh:class  <http://www.opengis.net/ont/geosparql#Geometry> .
+
+_:b31   rdf:rest   rdf:nil;
+        rdf:first  _:b33 .
+
+_:b33   sh:class  skos:Collection .
+
+_:b34   sh:class  g:Province .
+
+_:b29   rdf:rest   _:b35;
+        rdf:first  _:b34 .
+
+_:b35   rdf:rest   rdf:nil;
+        rdf:first  _:b36 .
+
+_:b36   sh:class  g:Prefecture .
+
+<http://edg.topbraid.solutions/model/CustomEnumeratedValue>
+        rdf:type    <http://edg.topbraid.solutions/model/CustomEnumerationClass>;
+        rdfs:label  "Enumeration";
+        <http://edg.topbraid.solutions/model/acronym>  "ENUMV" .
+
+<http://edg.topbraid.solutions/model/PVS_THREE-LEVEL-RATING-SCALE>
+        rdf:type    <http://edg.topbraid.solutions/model/PropertyValueSet>;
+        rdfs:label  "Three Level Rating Scale";
+        <http://edg.topbraid.solutions/model/property>  <http://www.linkedmodel.org/schema/dtype#literal>;
+        <http://edg.topbraid.solutions/model/class>  <http://edg.topbraid.solutions/model/ThreeLevelRatingScale> .
+
+<http://edg.topbraid.solutions/model/PVS_FIVE-LEVEL-RATING-SCALE>
+        rdf:type    <http://edg.topbraid.solutions/model/PropertyValueSet>;
+        rdfs:label  "Five Level Rating Scale";
+        <http://edg.topbraid.solutions/model/property>  <http://www.linkedmodel.org/schema/dtype#literal>;
+        <http://edg.topbraid.solutions/model/class>  <http://edg.topbraid.solutions/model/FiveLevelRatingScale> .
+
+<http://edg.topbraid.solutions/model/PVS_APPROVAL-STATUS>
+        rdf:type    <http://edg.topbraid.solutions/model/PropertyValueSet>;
+        rdfs:label  "Approval Status Values";
+        <http://edg.topbraid.solutions/model/property>  <http://www.linkedmodel.org/schema/dtype#literal>;
+        <http://edg.topbraid.solutions/model/class>  <http://edg.topbraid.solutions/model/ApprovalStatus> .
+
+<http://www.linkedmodel.org/schema/vaem#DocumentationGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Documentation graph" .
+
+<http://www.linkedmodel.org/schema/vaem#ServicesGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Services Graph" .
+
+<http://edg.topbraid.solutions/model/DataQualityStatus>
+        rdf:type      <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label    "Data Quality Status";
+        rdfs:comment  "\n<p><strong>Data Quality Status</strong> is an enumeration that denotes the quaility of a data asset.</p>\n";
+        <http://edg.topbraid.solutions/model/acronym>  "DQS" .
+
+<http://www.linkedmodel.org/schema/vaem#ViewGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "View graph" .
+
+<http://edg.topbraid.solutions/model/USgovClassifiedInformationSystem>
+        rdf:type    <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label  "US Government Classified Information System";
+        <http://purl.org/dc/terms/source>  "http://electrospaces.blogspot.com/2013/09/the-us-classification-system.html"^^rdf:HTML;
+        <http://purl.org/dc/terms/source>  "https://en.wikipedia.org/wiki/Classified_information_in_the_United_States"^^rdf:HTML;
+        <http://edg.topbraid.solutions/model/acronym>  "USCIS" .
+
+<http://edg.topbraid.solutions/model/ApprovalStatus>
+        rdf:type      <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label    "Approval Status";
+        rdfs:comment  "<p>An enumeration expressing the status of an approval.</p><p>This is used as a property of the <strong>Approvable</strong> aspect class for classes that require approval workflows. An example is the <strong>Data Exchange</strong> class.</p>";
+        <http://edg.topbraid.solutions/model/acronym>  "APPROVAL" .
+
+<http://edg.topbraid.solutions/schema/GMD_platform-governance>
+        rdf:type  <http://www.linkedmodel.org/schema/vaem#GraphMetaData>;
+        <http://edg.topbraid.solutions/model/description>  "\nThe <strong>EDG Platform Governance</strong> ontology specifies resources and properties that are needed for governance in \nthe TopBraid EDG platform. \nAt the platform level, governance is concerned with workflows and notifications.\n"^^rdf:HTML;
+        <http://purl.org/dc/terms/modified>  "2021-11-08"^^xsd:date .
+
+<http://edg.topbraid.solutions/model/FormatType>
+        rdf:type      <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label    "Format type";
+        rdfs:comment  "\n<p>An enumeration for expressing the kind of content of a file.\nIn a future release this may be expressed using mime types.</p>\n" .
+
+<http://www.linkedmodel.org/schema/vaem#TopQuadrant>
+        rdf:type    <http://edg.topbraid.solutions/model/Party>;
+        rdfs:label  "TopQuadrant" .
+
+<http://www.linkedmodel.org/schema/vaem#SchemaGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Schema graph" .
+
+<http://www.linkedmodel.org/schema/vaem#SPINlibraryGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "SPIN Library Graph" .
+
+<http://edg.topbraid.solutions/model/ComplianceStatus>
+        rdf:type      <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label    "Compliance Status";
+        rdfs:comment  "\n<p><strong>Compliance Status</strong> is an enumeration that summarizes the overall compliance of an asset.</p>\n";
+        <http://edg.topbraid.solutions/model/acronym>  "CSTAT" .
+
+<http://edg.topbraid.solutions/schema/core/GMD_core>
+        rdf:type  <http://www.linkedmodel.org/schema/vaem#GraphMetaData>;
+        <http://purl.org/dc/terms/modified>  "2021-06-06"^^xsd:date .
+
+<http://edg.topbraid.solutions/model/DataContainerType>
+        rdf:type      <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label    "Data Container Type";
+        rdfs:comment  "\n<p><strong>Data Container Type</strong> is an enumeration for defining types of data container. \nThe allowable values defined in EDG are:\n<strong>Business Objects</strong>, <strong>Apache Cassandra</strong>, \n<strong>File System</strong>, <strong>HANA</strong>, \n<strong>HIVE</strong>, <strong>MariaDB</strong>, \n<strong>Microsoft SQL Server</strong>, <strong>MongoDB</strong>, \n<strong>MySQL</strong>, <strong>Oracle</strong>, \n<strong>PostgreSQL</strong>, <strong>Snowflake</strong>, \n<strong>Sybase SQL Server</strong>, <strong>Teradata</strong>.\n</p>\n";
+        <http://edg.topbraid.solutions/model/acronym>  "DCNTNRTYPE" .
+
+<http://www.linkedmodel.org/schema/vaem#CollectionGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Collection graph" .
+
+<http://www.linkedmodel.org/schema/vaem#LinkSetGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Link Set graph" .
+
+<http://www.linkedmodel.org/schema/vaem#UnspecifiedGraphRole>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Unspecified Graph Role" .
+
+<http://www.linkedmodel.org/schema/vaem#ShapesUIgraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "SHAPES UI Graph" .
+
+<http://edg.topbraid.solutions/model/UNKNOWN-UPSTREAM>
+        rdf:type    <http://edg.topbraid.solutions/model/UNKNOWN-TYPE>;
+        rdfs:label  "No lineage" .
+
+<http://edg.topbraid.solutions/model/OrdinalScale>
+        rdf:type    <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label  "Ordinal Scale" .
+
+<http://edg.topbraid.solutions/model/EnumerationOntologyGraphRole>
+        rdf:type      <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label    "Enumeration Ontology Graph Role";
+        rdfs:comment  "A graph which is used to define enumeration classes, and optionally, their instances." .
+
+<http://www.linkedmodel.org/schema/vaem#ReferenceDataGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Reference data graph" .
+
+<http://edg.topbraid.solutions/model/PersonalDataCategory>
+        rdf:type      <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label    "Personal Data Category";
+        rdfs:comment  "\n<p>A data protection act (DPA) defines personal data as information about:</p>\n<ol>\n<li>racial or ethnic origin of the data subject;</li>\n<li>political opinions;</li>\n<li>religious beliefs or other beliefs of a similar nature;</li>\n<li>membership of a trade union;</li>\n<li>physical or mental health or condition;</li>\n<li>sexual orientation;</li>\n<li>commission or alleged commission of any offence; o</li>\n<li>any proceedings for any offence committed or alleged to have been committed by the data subject, the disposal of such proceedings or the sentence of any court in such proceedings.</li>\n</ol>\n<p>The GDPR defines <strong>Personal Data</strong> as: 'data consisting of racial or ethnic origin, political opinions, religious or philosophical beliefs, \nor trade union membership, genetic data, biometric data, data concerning health or data concerning a natural person's sex life \nor sexual orientation.'</p>\n";
+        <http://edg.topbraid.solutions/model/acronym>  "PDCAT" .
+
+<http://www.linkedmodel.org/schema/vaem#UtilityGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Utility Graph" .
+
+<http://www.linkedmodel.org/schema/vaem#DataGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Data graph" .
+
+<http://www.linkedmodel.org/schema/vaem#UnknownGraphRole>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Unknown graph role" .
+
+<http://www.linkedmodel.org/schema/vaem#VocabularyGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Vocabulary graph" .
+
+<http://edg.topbraid.solutions/model/CMMIcapabilityMaturityLevel>
+        rdf:type      <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label    "CMMI Capability Maturity Level";
+        rdfs:comment  "\n<p>A <strong>CMMI Capability Maturity Level</strong> defines an attainment stratification for assessing an organization's capability.\nThe levels are ordered and comprise a <strong>Capability Maturity Model</strong>.</p>\n";
+        <http://edg.topbraid.solutions/model/acronym>  "CCML" .
+
+<http://edg.topbraid.solutions/model/ProtectionMethod>
+        rdf:type    <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label  "Protection Method";
+        <http://edg.topbraid.solutions/model/acronym>  "PRTNMTHD" .
+
+<http://edg.topbraid.solutions/model/ResourceLocalNameConstructMethod>
+        rdf:type    <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label  "Resource Local Name Construct Method";
+        <http://edg.topbraid.solutions/model/acronym>  "RLNC_METHOD" .
+
+<http://www.linkedmodel.org/schema/vaem#ConfigurationGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Configuration Graph" .
+
+<http://www.linkedmodel.org/schema/vaem#MappingGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Mapping graph" .
+
+<http://edg.topbraid.solutions/model/IdentificationMethod>
+        rdf:type    <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label  "Identification Method";
+        <http://edg.topbraid.solutions/model/acronym>  "IDNTFCTNM" .
+
+<http://edg.topbraid.solutions/model/Cardinality>
+        rdf:type      <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label    "Cardinality";
+        rdfs:comment  "\n<p><strong>Cardinality</strong> is an enumeration that specifies values for the number of participants that are allowable in an associated entity.</p>\n";
+        <http://edg.topbraid.solutions/model/acronym>  "CRDNLTY" .
+
+<http://edg.topbraid.solutions/model/ThreeLevelRatingScale>
+        rdf:type    <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label  "Rating scale - three values";
+        <http://edg.topbraid.solutions/model/acronym>  "THREELRS" .
+
+<http://www.linkedmodel.org/schema/vaem#TransformsGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Transforms graph" .
+
+<http://edg.topbraid.solutions/model/PersonalDataUseConsent>
+        rdf:type      <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label    "Personal Data Use Consent";
+        rdfs:comment  "An enumeration of consent governance mechanisms";
+        <http://edg.topbraid.solutions/model/acronym>  "PDUC" .
+
+<http://www.linkedmodel.org/schema/vaem#RulesGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Rules Graph" .
+
+<http://edg.topbraid.solutions/model/ConfidentialityLevel>
+        rdf:type      <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label    "Confidentiality Level";
+        rdfs:comment  "\n<p><strong>Confidentiality Level</strong> is an enumeration that specifies values for the confidentiality of an entity.</p>\n" .
+
+<http://edg.topbraid.solutions/model/EnumeratedValue>
+        rdf:type    <http://edg.topbraid.solutions/model/EnumerationClass>;
+        rdfs:label  "Enumerated Value" .
+
+<http://edg.topbraid.solutions/model/FrequencyOfChange>
+        rdf:type      <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label    "frequency of change";
+        rdfs:comment  "A class containing controlled values to be used to identify frequency of changes to data.";
+        <http://edg.topbraid.solutions/model/acronym>  "FRQCHG" .
+
+<http://edg.topbraid.solutions/model/AssetStatus>
+        rdf:type      <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label    "Asset Status";
+        rdfs:comment  "\n<p><strong>AssetStatus</strong> is an enumeration of values that specify the status of an asset.</p>\n";
+        <http://edg.topbraid.solutions/model/acronym>  "ASSETSTAT" .
+
+<http://www.linkedmodel.org/schema/vaem#ProjectGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Project Type Graph" .
+
+<http://www.linkedmodel.org/schema/vaem#ScriptGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Script graph" .
+
+<http://www.linkedmodel.org/schema/vaem#CurationGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Curation graph" .
+
+<http://edg.topbraid.solutions/model/ReportType>
+        rdf:type      <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label    "Report Type";
+        rdfs:comment  "\n<p>A <strong>Report Type</strong> is an enumeration that classifies kinds of <strong>Report</strong> in cases where there is\nno need for subclasses of <strong>Report</strong>.</p>\n";
+        <http://edg.topbraid.solutions/model/acronym>  "REPTYPE" .
+
+<http://edg.topbraid.solutions/model/MetricType>
+        rdf:type    <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label  "Metric type" .
+
+<http://www.linkedmodel.org/schema/vaem#GMD_VAEM>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphMetaData>;
+        rdfs:label  "VAEM Schema Version 2.0 Metadata";
+        <http://purl.org/dc/terms/created>  "2011-04-20"^^xsd:date;
+        <http://purl.org/dc/terms/modified>  "2020-03-25"^^xsd:date .
+
+<http://edg.topbraid.solutions/model/Vendor>
+        rdf:type      <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label    "Vendor";
+        rdfs:comment  "Enumerated values for a supplier.";
+        <http://edg.topbraid.solutions/model/acronym>  "SWVNDR" .
+
+<http://www.linkedmodel.org/schema/dtype#GMD_DTYPE>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphMetaData>;
+        rdfs:label  "DTYPE Schema Version 2.0 Metadata";
+        <http://purl.org/dc/terms/created>  "2011-05-29"^^xsd:date;
+        <http://purl.org/dc/terms/modified>  "2020-03-25"^^xsd:date .
+
+<http://www.linkedmodel.org/schema/vaem#DatatypesGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Datatypes graph" .
+
+<http://www.linkedmodel.org/schema/vaem#ConnectSetGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Connect set graph" .
+
+<http://edg.topbraid.solutions/schema/core/GMD_pvs>
+        rdf:type  <http://www.linkedmodel.org/schema/vaem#GraphMetaData>;
+        <http://purl.org/dc/terms/modified>  "2022-10-24"^^xsd:date .
+
+<http://www.linkedmodel.org/schema/vaem#ViewerGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Viewer Graph" .
+
+<http://edg.topbraid.solutions/model/DataGraphSchema>
+        rdf:type      <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label    "Data Graph Schema";
+        rdfs:comment  "\n<p>A <strong>Data Graph Schema</strong> is a graph that can be used as a schema for an EDG Data Graph.</p>\n" .
+
+<http://edg.topbraid.solutions/model/Scale>
+        rdf:type    <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label  "Scale" .
+
+<http://edg.topbraid.solutions/model/AccessRightRestriction>
+        rdf:type      <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label    "Access Right Restriction";
+        rdfs:comment  "Using an enumeration, specifies what can be accessed in a resource, that is an application or system. The values of the enumeration, defined in an EDG code-list are:  all access is prohibited, data access is prohibited, metadata access is prohibited, all access is allowed, sample data access is prohibited.";
+        <http://edg.topbraid.solutions/model/acronym>  "ARR" .
+
+<http://www.linkedmodel.org/schema/vaem#CodelistGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Codelist graph" .
+
+<http://edg.topbraid.solutions/model/HardwareVendor>
+        rdf:type      <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label    "Hardware Vendor";
+        rdfs:comment  "Enumerated values for denoting a supplier for hardware, defined in a codelist asset collection.";
+        <http://edg.topbraid.solutions/model/acronym>  "HWVNDR" .
+
+<http://www.linkedmodel.org/schema/vaem#FunctionsGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Functions graph" .
+
+<http://www.linkedmodel.org/schema/vaem#EditorGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Editor Graph" .
+
+<http://edg.topbraid.solutions/model/AuthorizationMethod>
+        rdf:type      <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label    "Authorization Method";
+        rdfs:comment  "\n<p>An <strong>Authentication Method</strong> is the means by access rights/privileges to resources are verified.</p>\n";
+        <http://edg.topbraid.solutions/model/acronym>  "ATHRZTNM" .
+
+<http://www.linkedmodel.org/schema/vaem#ControllerGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Controller graph" .
+
+<http://edg.topbraid.solutions/model/ImpactScale>
+        rdf:type    <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label  "Impact scale" .
+
+<http://edg.topbraid.solutions/model/DataGovernanceMaturityLevel>
+        rdf:type    <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label  "Data Governance Maturity Level";
+        <http://edg.topbraid.solutions/model/acronym>  "DGML" .
+
+<http://edg.topbraid.solutions/model/DataExchangeFrequency>
+        rdf:type    <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label  "Data Exchange Frequency";
+        <http://edg.topbraid.solutions/model/acronym>  "DEXCHFRQ" .
+
+<http://www.linkedmodel.org/schema/vaem#SurrogateGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Surrogate graph" .
+
+<http://edg.topbraid.solutions/schema/base/GMD_enumerations>
+        rdf:type  <http://www.linkedmodel.org/schema/vaem#GraphMetaData>;
+        <http://purl.org/dc/terms/modified>  "2016-12-18"^^xsd:date .
+
+<http://www.linkedmodel.org/schema/vaem#ShapesGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "SHAPES Graph" .
+
+<http://edg.topbraid.solutions/model/FiveLevelRatingScale>
+        rdf:type    <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label  "Rating scale - five values";
+        <http://edg.topbraid.solutions/model/acronym>  "FIVELRS" .
+
+<http://www.linkedmodel.org/schema/vaem#DynamicGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Dynamic Graph" .
+
+<http://edg.topbraid.solutions/model/UNKNOWN-DOWNSTREAM>
+        rdf:type    <http://edg.topbraid.solutions/model/UNKNOWN-TYPE>;
+        rdfs:label  "No Impact" .
+
+<http://www.linkedmodel.org/schema/vaem#ModelGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Model Graph" .
+
+<http://edg.topbraid.solutions/model/DataQualityVerificationMethod>
+        rdf:type      <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label    "Data Quality Verification Method";
+        rdfs:comment  "\n<p>A <strong>Data Quality Verification Method</strong> is an enumeration of ways of performing checks on the data quality of an asset.\nThe following ways are defined: \n<strong>Automated</strong>, \n<strong>Fully Manual</strong>, \n<strong>None</strong>, \n<strong>Semi-Automated</strong> and \n<strong>Random Manual Samples</strong>.</p>\n" .
+
+<http://edg.topbraid.solutions/model/SoftwareVendor>
+        rdf:type      <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label    "Software Vendor";
+        rdfs:comment  "Enumerated values for denoting a supplier for a software executable (or database), defined in a codelist asset collection. Examples might be ORACLE, TERRADATA, SAP, IBM and MICROSOFT.";
+        <http://edg.topbraid.solutions/model/acronym>  "SWVNDR" .
+
+<http://edg.topbraid.solutions/model/DataKind>
+        rdf:type      <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label    "Data Kind";
+        rdfs:comment  "\n<p><strong>Data Kind</strong> is an EDG system enumeration that denotes the 'kind' of a data asset.\nThree 'kinds' of data asset are defined: <strong>Master Data</strong>, <strong>Operational Data</strong> and\n<strong>Reference Data</strong>.</p>\n";
+        <http://edg.topbraid.solutions/model/acronym>  "DKND" .
+
+<http://edg.topbraid.solutions/schema/base/GMD_base>
+        rdf:type  <http://www.linkedmodel.org/schema/vaem#GraphMetaData>;
+        <http://purl.org/dc/terms/modified>  "2022-10-18"^^xsd:date .
+
+<http://edg.topbraid.solutions/model/UNKNOWN>
+        rdf:type    <http://edg.topbraid.solutions/model/UNKNOWN-TYPE>;
+        rdfs:label  "UNKNOWN" .
+
+<http://edg.topbraid.solutions/model/AccessControlMethod>
+        rdf:type      <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label    "Access Control Method";
+        rdfs:comment  "\n<p>Using an enumeration, <strong>Access Control Method</strong> specifies the controlling mechanism for granting access to a resource, \nfor example, an application or system.  \nThe values of the enumeration, defined in an EDG codelist, are: <strong>Attribute-based access control (ABAC)</strong>, \n<strong>Discretionary access control (DAC)</strong>, <strong>Mandatory access control (MAC)</strong>, \n<strong>Role-based access control (RBAC)</strong> and <strong>Rule-based access control</strong>.</p>\n";
+        <http://edg.topbraid.solutions/model/acronym>  "ACM" .
+
+<http://www.linkedmodel.org/schema/vaem#ProxyGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Proxy graph" .
+
+<http://www.linkedmodel.org/schema/vaem#ImporterGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Importer Graph" .
+
+<http://edg.topbraid.solutions/model/AuthenticationMethod>
+        rdf:type      <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label    "Authentication Method";
+        rdfs:comment  "\n<p>An <strong>Authentication Method</strong> is the means by which the identity of a computer system user is verified. \nFor example this might involve validating personal identity documents, verifying the authenticity of a website \nwith a digital certificate, or ensuring that a  document is not counterfeit.</p>\n";
+        <http://edg.topbraid.solutions/model/acronym>  "ATHNTCTNM" .
+
+<http://www.linkedmodel.org/schema/vaem#ConstraintsGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Constraints graph" .
+
+<http://edg.topbraid.solutions/model/IssueStatus>
+        rdf:type    <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label  "Issue Status" .
+
+<http://www.linkedmodel.org/schema/vaem#ExporterGraph>
+        rdf:type    <http://www.linkedmodel.org/schema/vaem#GraphRole>;
+        rdfs:label  "Exporter Graph" .
+
+<urn:x-evn-master:beb_enumerations>
+        rdf:type    <http://teamwork.topbraidlive.org/ontologyprojects#Ontology>;
+        rdf:type    <http://edg.topbraid.solutions/model/EnumerationOntology>;
+        rdfs:label  "BEB Enumerations" .
+
+<http://example.org/enumeration-collections/BEB_Enumerations#Gender>
+        rdf:type    <http://edg.topbraid.solutions/model/CustomEnumerationClass>;
+        rdfs:label  "Gender" .
+
+<http://example.org/enumeration-collections/BEB_Enumerations#Male>
+        rdf:type    <http://example.org/enumeration-collections/BEB_Enumerations#Gender>;
+        rdfs:label  "Male";
+        <http://www.linkedmodel.org/schema/dtype#code>  "M";
+        <http://www.linkedmodel.org/schema/dtype#order>  1 .
+
+<http://example.org/enumeration-collections/BEB_Enumerations#Female>
+        rdf:type    <http://example.org/enumeration-collections/BEB_Enumerations#Gender>;
+        rdfs:label  "Female";
+        <http://www.linkedmodel.org/schema/dtype#code>  "F";
+        <http://www.linkedmodel.org/schema/dtype#order>  2 .
+
+<http://example.org/enumeration-collections/BEB_Enumerations#AgeRange>
+        rdf:type    <http://edg.topbraid.solutions/model/CustomEnumerationClass>;
+        rdfs:label  "Age Range" .
+
+<http://example.org/enumeration-collections/BEB_Enumerations#_05>
+        rdf:type    <http://example.org/enumeration-collections/BEB_Enumerations#AgeRange>;
+        rdfs:label  "0-5";
+        <http://www.linkedmodel.org/schema/dtype#code>  "A";
+        <http://www.linkedmodel.org/schema/dtype#order>  1 .
+
+<http://example.org/enumeration-collections/BEB_Enumerations#_610>
+        rdf:type    <http://example.org/enumeration-collections/BEB_Enumerations#AgeRange>;
+        rdfs:label  "6-10";
+        <http://www.linkedmodel.org/schema/dtype#code>  "B";
+        <http://www.linkedmodel.org/schema/dtype#order>  2 .
+
+<http://example.org/enumeration-collections/BEB_Enumerations#_1115>
+        rdf:type    <http://example.org/enumeration-collections/BEB_Enumerations#AgeRange>;
+        rdfs:label  "11-15";
+        <http://www.linkedmodel.org/schema/dtype#code>  "C";
+        <http://www.linkedmodel.org/schema/dtype#order>  3;
+        <http://edg.topbraid.solutions/model/status>  <http://edg.topbraid.solutions/model/ASSETSTAT_ApprovedStatus> .
+
+<http://edg.topbraid.solutions/model/ASSETSTAT_ApprovedStatus>
+        rdf:type    <http://edg.topbraid.solutions/model/AssetStatus>;
+        rdfs:label  "Approved";
+        <http://www.linkedmodel.org/schema/dtype#code>  "5";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "approved";
+        <http://www.linkedmodel.org/schema/dtype#order>  5 .
+
+g:ValueRangePropertyGroup
+        rdf:type    sh:PropertyGroup;
+        rdfs:label  "Value Range";
+        sh:order    "11"^^xsd:decimal .
+
+skos:Concept-Definition2
+        rdf:type     sh:PropertyShape;
+        sh:order     7.0;
+        sh:name      "Definition 2";
+        sh:group     skos:LabelsAndDescriptionPropertyGroup;
+        sh:path      skos:definition;
+        sh:maxCount  1;
+        sh:datatype  xsd:string .
+
+<urn:data-integration:edfec3bc-48fd-4e76-9c3d-4fe94f244dd2>
+        rdf:type                  <http://topbraid.org/sheets#SpreadsheetDataIntegration>;
+        rdfs:label                "Integration with spreadsheet: All instances of Thing";
+        rdfs:comment              "This data integration was created using Export Instances of Thing to Spreadsheet";
+        rdfs:seeAlso              <https://docs.google.com/spreadsheets/d/1oTni51Ail1A3zfEitLdFd3aYeJphgZAGhVq6ZltvSqU/edit>;
+        dash:pullScript           <http://topbraid.org/sheets#PullAssetsFromSpreadsheet>;
+        dash:iconClass            "fas fa-table";
+        dash:validationScript     <http://topbraid.org/sheets#ValidateAssetsOnSpreadsheet>;
+        dash:localResourcesQuery  "\n            SELECT DISTINCT ?instance\n            WHERE {\n                ?type rdfs:subClassOf* <http://www.w3.org/2002/07/owl#Thing> .\n                ?instance a ?type .\n            } ORDER BY ?instance";
+        dash:pushScript           <http://topbraid.org/sheets#PushAssetsToSpreadsheet>;
+        dash:props                "{\n  \"worksheetTitle\": \"All instances of Thing\",\n  \"defaultType\": \"http://www.w3.org/2002/07/owl#Thing\",\n  \"preserveOtherProperties\": true,\n  \"columns\": [\n    {\n      \"name\": \"Unique Identifier\"\n    },\n    {\n      \"name\": \"comments (no language)\",\n      \"predicate\": \"http://www.w3.org/2000/01/rdf-schema#comment\",\n      \"datatype\": \"rdf:HTML\",\n      \"lang\": \"\"\n    },\n    {\n      \"name\": \"comments (en)\",\n      \"predicate\": \"http://www.w3.org/2000/01/rdf-schema#comment\",\n      \"datatype\": \"rdf:HTML\",\n      \"lang\": \"en\"\n    },\n    {\n      \"name\": \"comments (ar)\",\n      \"predicate\": \"http://www.w3.org/2000/01/rdf-schema#comment\",\n      \"datatype\": \"rdf:HTML\",\n      \"lang\": \"ar\"\n    },\n    {\n      \"name\": \"comments (de)\",\n      \"predicate\": \"http://www.w3.org/2000/01/rdf-schema#comment\",\n      \"datatype\": \"rdf:HTML\",\n      \"lang\": \"de\"\n    },\n    {\n      \"name\": \"comments (es)\",\n      \"predicate\": \"http://www.w3.org/2000/01/rdf-schema#comment\",\n      \"datatype\": \"rdf:HTML\",\n      \"lang\": \"es\"\n    },\n    {\n      \"name\": \"comments (fr)\",\n      \"predicate\": \"http://www.w3.org/2000/01/rdf-schema#comment\",\n      \"datatype\": \"rdf:HTML\",\n      \"lang\": \"fr\"\n    },\n    {\n      \"name\": \"comments (it)\",\n      \"predicate\": \"http://www.w3.org/2000/01/rdf-schema#comment\",\n      \"datatype\": \"rdf:HTML\",\n      \"lang\": \"it\"\n    },\n    {\n      \"name\": \"comments (nl)\",\n      \"predicate\": \"http://www.w3.org/2000/01/rdf-schema#comment\",\n      \"datatype\": \"rdf:HTML\",\n      \"lang\": \"nl\"\n    },\n    {\n      \"name\": \"comments (pt)\",\n      \"predicate\": \"http://www.w3.org/2000/01/rdf-schema#comment\",\n      \"datatype\": \"rdf:HTML\",\n      \"lang\": \"pt\"\n    },\n    {\n      \"name\": \"comments (zh)\",\n      \"predicate\": \"http://www.w3.org/2000/01/rdf-schema#comment\",\n      \"datatype\": \"rdf:HTML\",\n      \"lang\": \"zh\"\n    },\n    {\n      \"name\": \"value in enumeration\",\n      \"predicate\": \"http://www.w3.org/1999/02/22-rdf-syntax-ns#type\",\n      \"class\": \"http://www.w3.org/2000/01/rdf-schema#Class\"\n    },\n    {\n      \"name\": \"labels (no language)\",\n      \"predicate\": \"http://www.w3.org/2000/01/rdf-schema#label\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"\"\n    },\n    {\n      \"name\": \"labels (en)\",\n      \"predicate\": \"http://www.w3.org/2000/01/rdf-schema#label\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"en\"\n    },\n    {\n      \"name\": \"labels (ar)\",\n      \"predicate\": \"http://www.w3.org/2000/01/rdf-schema#label\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"ar\"\n    },\n    {\n      \"name\": \"labels (de)\",\n      \"predicate\": \"http://www.w3.org/2000/01/rdf-schema#label\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"de\"\n    },\n    {\n      \"name\": \"labels (es)\",\n      \"predicate\": \"http://www.w3.org/2000/01/rdf-schema#label\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"es\"\n    },\n    {\n      \"name\": \"labels (fr)\",\n      \"predicate\": \"http://www.w3.org/2000/01/rdf-schema#label\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"fr\"\n    },\n    {\n      \"name\": \"labels (it)\",\n      \"predicate\": \"http://www.w3.org/2000/01/rdf-schema#label\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"it\"\n    },\n    {\n      \"name\": \"labels (nl)\",\n      \"predicate\": \"http://www.w3.org/2000/01/rdf-schema#label\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"nl\"\n    },\n    {\n      \"name\": \"labels (pt)\",\n      \"predicate\": \"http://www.w3.org/2000/01/rdf-schema#label\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"pt\"\n    },\n    {\n      \"name\": \"labels (zh)\",\n      \"predicate\": \"http://www.w3.org/2000/01/rdf-schema#label\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"zh\"\n    },\n    {\n      \"name\": \"acronym (no language)\",\n      \"predicate\": \"http://edg.topbraid.solutions/model/acronym\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"\"\n    },\n    {\n      \"name\": \"acronym (en)\",\n      \"predicate\": \"http://edg.topbraid.solutions/model/acronym\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"en\"\n    },\n    {\n      \"name\": \"acronym (ar)\",\n      \"predicate\": \"http://edg.topbraid.solutions/model/acronym\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"ar\"\n    },\n    {\n      \"name\": \"acronym (de)\",\n      \"predicate\": \"http://edg.topbraid.solutions/model/acronym\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"de\"\n    },\n    {\n      \"name\": \"acronym (es)\",\n      \"predicate\": \"http://edg.topbraid.solutions/model/acronym\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"es\"\n    },\n    {\n      \"name\": \"acronym (fr)\",\n      \"predicate\": \"http://edg.topbraid.solutions/model/acronym\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"fr\"\n    },\n    {\n      \"name\": \"acronym (it)\",\n      \"predicate\": \"http://edg.topbraid.solutions/model/acronym\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"it\"\n    },\n    {\n      \"name\": \"acronym (nl)\",\n      \"predicate\": \"http://edg.topbraid.solutions/model/acronym\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"nl\"\n    },\n    {\n      \"name\": \"acronym (pt)\",\n      \"predicate\": \"http://edg.topbraid.solutions/model/acronym\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"pt\"\n    },\n    {\n      \"name\": \"acronym (zh)\",\n      \"predicate\": \"http://edg.topbraid.solutions/model/acronym\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"zh\"\n    },\n    {\n      \"name\": \"literal (no language)\",\n      \"predicate\": \"http://www.linkedmodel.org/schema/dtype#literal\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"\"\n    },\n    {\n      \"name\": \"literal (en)\",\n      \"predicate\": \"http://www.linkedmodel.org/schema/dtype#literal\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"en\"\n    },\n    {\n      \"name\": \"literal (ar)\",\n      \"predicate\": \"http://www.linkedmodel.org/schema/dtype#literal\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"ar\"\n    },\n    {\n      \"name\": \"literal (de)\",\n      \"predicate\": \"http://www.linkedmodel.org/schema/dtype#literal\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"de\"\n    },\n    {\n      \"name\": \"literal (es)\",\n      \"predicate\": \"http://www.linkedmodel.org/schema/dtype#literal\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"es\"\n    },\n    {\n      \"name\": \"literal (fr)\",\n      \"predicate\": \"http://www.linkedmodel.org/schema/dtype#literal\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"fr\"\n    },\n    {\n      \"name\": \"literal (it)\",\n      \"predicate\": \"http://www.linkedmodel.org/schema/dtype#literal\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"it\"\n    },\n    {\n      \"name\": \"literal (nl)\",\n      \"predicate\": \"http://www.linkedmodel.org/schema/dtype#literal\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"nl\"\n    },\n    {\n      \"name\": \"literal (pt)\",\n      \"predicate\": \"http://www.linkedmodel.org/schema/dtype#literal\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"pt\"\n    },\n    {\n      \"name\": \"literal (zh)\",\n      \"predicate\": \"http://www.linkedmodel.org/schema/dtype#literal\",\n      \"datatype\": \"xsd:string\",\n      \"lang\": \"zh\"\n    },\n    {\n      \"name\": \"code\",\n      \"predicate\": \"http://www.linkedmodel.org/schema/dtype#code\",\n      \"datatype\": \"xsd:string\"\n    },\n    {\n      \"name\": \"order\",\n      \"predicate\": \"http://www.linkedmodel.org/schema/dtype#order\",\n      \"datatype\": \"xsd:integer\"\n    },\n    {\n      \"name\": \"status\",\n      \"predicate\": \"http://edg.topbraid.solutions/model/status\",\n      \"class\": \"http://edg.topbraid.solutions/model/AssetStatus\",\n      \"mapping\": \"uris\"\n    },\n    {\n      \"name\": \"description\",\n      \"predicate\": \"http://edg.topbraid.solutions/model/description\",\n      \"datatype\": \"rdf:HTML\"\n    },\n    {\n      \"name\": \"issue title\",\n      \"predicate\": \"http://edg.topbraid.solutions/model/name\",\n      \"datatype\": \"xsd:string\"\n    },\n    {\n      \"name\": \"class\",\n      \"predicate\": \"http://edg.topbraid.solutions/model/class\",\n      \"class\": \"http://www.w3.org/2000/01/rdf-schema#Resource\",\n      \"mapping\": \"uris\"\n    },\n    {\n      \"name\": \"property\",\n      \"predicate\": \"http://edg.topbraid.solutions/model/property\",\n      \"mapping\": \"uris\"\n    },\n    {\n      \"name\": \"created date\",\n      \"predicate\": \"http://purl.org/dc/terms/created\",\n      \"datatype\": \"xsd:date\"\n    },\n    {\n      \"name\": \"modified date\",\n      \"predicate\": \"http://purl.org/dc/terms/modified\",\n      \"datatype\": \"xsd:date\"\n    },\n    {\n      \"name\": \"source\",\n      \"predicate\": \"http://purl.org/dc/terms/source\",\n      \"datatype\": \"rdf:HTML\"\n    }\n  ],\n  \"workbookId\": \"GoogleSheets:GoogleSpreadsheetIntegration:1oTni51Ail1A3zfEitLdFd3aYeJphgZAGhVq6ZltvSqU\"\n}"^^rdf:JSON;
+        dash:lastPullEndTime      "2025-11-11T18:29:47.858Z"^^xsd:dateTime;
+        dash:lastPullStartTime    "2025-11-11T18:29:43.414Z"^^xsd:dateTime .
+
+<http://edg.topbraid.solutions/model/MT_GOVERNANCE>
+        rdf:type    <http://edg.topbraid.solutions/model/MetricType>;
+        rdfs:label  "Governance Metric";
+        <http://www.linkedmodel.org/schema/dtype#code>  "3";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "governance" .
+
+<http://edg.topbraid.solutions/model/ARR_SDAR>
+        rdf:type      <http://edg.topbraid.solutions/model/AccessRightRestriction>;
+        rdfs:label    "Sample Data Access Prohibited";
+        rdfs:comment  "Sample data access is prohibited.";
+        <http://www.linkedmodel.org/schema/dtype#code>  "3";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "sdar";
+        <http://www.linkedmodel.org/schema/dtype#order>  3 .
+
+<http://edg.topbraid.solutions/model/ConfidentialityLevel_SECRET>
+        rdf:type    <http://edg.topbraid.solutions/model/ConfidentialityLevel>;
+        rdfs:label  "Secret";
+        <http://www.linkedmodel.org/schema/dtype#code>  "3";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "secret";
+        <http://www.linkedmodel.org/schema/dtype#order>  3 .
+
+<http://edg.topbraid.solutions/model/FRQCHG_UNSPECIFIED>
+        rdf:type      <http://edg.topbraid.solutions/model/FrequencyOfChange>;
+        rdfs:label    "Unspecified";
+        rdfs:comment  "Changes are not specified";
+        <http://www.linkedmodel.org/schema/dtype#code>  "1";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "unspecified";
+        <http://www.linkedmodel.org/schema/dtype#order>  1 .
+
+<http://edg.topbraid.solutions/model/ASSETSTAT_InReviewStatus>
+        rdf:type    <http://edg.topbraid.solutions/model/AssetStatus>;
+        rdfs:label  "In Review";
+        <http://www.linkedmodel.org/schema/dtype#code>  "3";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "review";
+        <http://www.linkedmodel.org/schema/dtype#order>  3 .
+
+<http://edg.topbraid.solutions/model/PCAM_FULLY-MANUAL>
+        rdf:type    <http://edg.topbraid.solutions/model/PolicyComplianceAssuranceMethod>;
+        rdfs:label  "Fully Manual";
+        <http://www.linkedmodel.org/schema/dtype#code>  "2";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "fully-manual";
+        <http://www.linkedmodel.org/schema/dtype#order>  3 .
+
+<http://edg.topbraid.solutions/model/PolicyComplianceAssuranceMethod>
+        rdf:type      <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label    "Policy Compliance Assurance Method";
+        rdfs:comment  "\n<p>A <strong>Policy Compliance Assurance Method</strong> is a codelist of the ways of stating how the assurance of\ncompliance of a policy is done.\nThe following ways are defined: \n<strong>Automated</strong>, \n<strong>Fully Manual</strong>, \n<strong>None</strong>, \n<strong>Semi-Automated</strong> and \n<strong>Random Manual Samples</strong>.</p>\n";
+        <http://edg.topbraid.solutions/model/acronym>  "PCAM" .
+
+<http://edg.topbraid.solutions/model/ATHRZTNM_UNRESTRICTED>
+        rdf:type      <http://edg.topbraid.solutions/model/AuthorizationMethod>;
+        rdfs:label    "Unrestricted";
+        rdfs:comment  "No authorization checks are necessary.";
+        <http://www.linkedmodel.org/schema/dtype#code>  "1";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "unrestricted";
+        <http://www.linkedmodel.org/schema/dtype#order>  1 .
+
+<http://edg.topbraid.solutions/model/MT_WORKFLOW>
+        rdf:type    <http://edg.topbraid.solutions/model/MetricType>;
+        rdfs:label  "Workflow Metric";
+        <http://www.linkedmodel.org/schema/dtype#code>  "40";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "workflow" .
+
+<http://edg.topbraid.solutions/model/ASSETSTAT_InUseStatus>
+        rdf:type    <http://edg.topbraid.solutions/model/AssetStatus>;
+        rdfs:label  "In Use";
+        <http://www.linkedmodel.org/schema/dtype#code>  "6";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "used";
+        <http://www.linkedmodel.org/schema/dtype#order>  6 .
+
+<http://edg.topbraid.solutions/model/ATHNTCTNM_COGNITIVE_PASSWORD>
+        rdf:type      <http://edg.topbraid.solutions/model/AuthenticationMethod>;
+        rdfs:label    "Cognitive Password";
+        rdfs:comment  "Verifies an individuals identity by asking for a protected passworD, along with facts or opinion-based information used to verify an individual identity (e.g.: mothers maidens name).";
+        <http://www.linkedmodel.org/schema/dtype#code>  "4";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "cognitive_pasword";
+        <http://www.linkedmodel.org/schema/dtype#order>  4 .
+
+<http://edg.topbraid.solutions/model/ATHRZTNM_RULE_BASED>
+        rdf:type      <http://edg.topbraid.solutions/model/AuthorizationMethod>;
+        rdfs:label    "Rule-Based Authorization";
+        rdfs:comment  "Authorization is based on rules.";
+        <http://www.linkedmodel.org/schema/dtype#code>  "5";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "ruba";
+        <http://www.linkedmodel.org/schema/dtype#order>  5 .
+
+<http://edg.topbraid.solutions/model/CMMICMLVL_MANAGED>
+        rdf:type    <http://edg.topbraid.solutions/model/CMMIcapabilityMaturityLevel>;
+        rdfs:label  "Managed";
+        <http://www.linkedmodel.org/schema/dtype#code>  "2";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "managed";
+        <http://www.linkedmodel.org/schema/dtype#order>  2 .
+
+<http://edg.topbraid.solutions/model/ARR_MDAR>
+        rdf:type      <http://edg.topbraid.solutions/model/AccessRightRestriction>;
+        rdfs:label    "Metadata Access Prohibited";
+        rdfs:comment  "Metadata access is prohibited.";
+        <http://www.linkedmodel.org/schema/dtype#code>  "2";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "mdar";
+        <http://www.linkedmodel.org/schema/dtype#order>  2 .
+
+<http://edg.topbraid.solutions/model/PDUC_CONSENT-IMPLIED-BY-CONTRACT>
+        rdf:type    <http://edg.topbraid.solutions/model/PersonalDataUseConsent>;
+        rdfs:label  "Consent Implied By Contract";
+        <http://www.linkedmodel.org/schema/dtype#code>  "PDUCC01";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "contract-based" .
+
+<http://edg.topbraid.solutions/codelist/governance/GMD_governance>
+        rdf:type  <http://www.linkedmodel.org/schema/vaem#GraphMetaData>;
+        <http://purl.org/dc/terms/modified>  "2023-09-05"^^xsd:date .
+
+<http://edg.topbraid.solutions/model/CMPLCESTAT_COMPLIANT>
+        rdf:type    <http://edg.topbraid.solutions/model/ComplianceStatus>;
+        rdfs:label  "Compliant";
+        <http://www.linkedmodel.org/schema/dtype#code>  "2";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "compliant" .
+
+<http://edg.topbraid.solutions/model/CMPLCESTAT_UNKNOWN>
+        rdf:type    <http://edg.topbraid.solutions/model/ComplianceStatus>;
+        rdfs:label  "Unknown";
+        <http://www.linkedmodel.org/schema/dtype#code>  "0";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "unknown" .
+
+<http://edg.topbraid.solutions/model/CMPLCESTAT_NONCOMPLIANT>
+        rdf:type    <http://edg.topbraid.solutions/model/ComplianceStatus>;
+        rdfs:label  "Non-Compliant";
+        <http://www.linkedmodel.org/schema/dtype#code>  "1";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "non-compliant" .
+
+<http://edg.topbraid.solutions/model/IMPACTSCALE_NEGLIGIBLE>
+        rdf:type    <http://edg.topbraid.solutions/model/ImpactScale>;
+        rdfs:label  "Negligible";
+        <http://edg.topbraid.solutions/model/name>  "negligible";
+        <http://www.linkedmodel.org/schema/dtype#code>  "1";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "negligible";
+        <http://www.linkedmodel.org/schema/dtype#order>  1 .
+
+<http://edg.topbraid.solutions/model/ASSETSTAT_RejectedStatus>
+        rdf:type    <http://edg.topbraid.solutions/model/AssetStatus>;
+        rdfs:label  "Rejected Status";
+        <http://www.linkedmodel.org/schema/dtype#code>  "7";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "rejected";
+        <http://www.linkedmodel.org/schema/dtype#order>  7 .
+
+<http://edg.topbraid.solutions/model/FRQCHG_ANNUAL>
+        rdf:type      <http://edg.topbraid.solutions/model/FrequencyOfChange>;
+        rdfs:label    "Annual";
+        rdfs:comment  "Changes are once a year";
+        <http://www.linkedmodel.org/schema/dtype#code>  "3";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "annual";
+        <http://www.linkedmodel.org/schema/dtype#order>  3 .
+
+<http://edg.topbraid.solutions/model/USCIS_SBU>
+        rdf:type    <http://edg.topbraid.solutions/model/USgovClassifiedInformationSystem>;
+        rdfs:label  "Sensitive But Unclassified";
+        <http://edg.topbraid.solutions/model/description>  "Sensitive but Unclassified (SBU) information should not be disclosed but is not national security information and cannot be classified according to Executive Order (EO)12958, as amended. These materials must be: properly marked, locked up when not under the supervision of an authorized person, and encrypted while in transit over a non-secure network. Some examples are: trade secrets, proprietary information, financial information, personnel and medical records, procurement-sensitive information, IT system security plans, contingency plans, audit logs (recordings of exceptions and other security-related events), vulnerability reports, incident reports and Personally Identifiable Information (PII)."^^rdf:HTML;
+        <http://www.linkedmodel.org/schema/dtype#code>  "2";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "sbu";
+        <http://www.linkedmodel.org/schema/dtype#order>  2 .
+
+<http://edg.topbraid.solutions/model/ATHRZTNM_CONTAINER_BASED>
+        rdf:type      <http://edg.topbraid.solutions/model/AuthorizationMethod>;
+        rdfs:label    "Container-Based Authorization";
+        rdfs:comment  "Authorization is governed at a container level, where 'container' can be a file, graph, or database.";
+        <http://www.linkedmodel.org/schema/dtype#code>  "8";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "cba";
+        <http://www.linkedmodel.org/schema/dtype#order>  8 .
+
+<http://edg.topbraid.solutions/model/THREELRS_HIGH>
+        rdf:type    <http://edg.topbraid.solutions/model/ThreeLevelRatingScale>;
+        rdfs:label  "High";
+        <http://edg.topbraid.solutions/model/name>  "high";
+        <http://www.linkedmodel.org/schema/dtype#code>  "3";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "high";
+        <http://www.linkedmodel.org/schema/dtype#order>  4 .
+
+<http://edg.topbraid.solutions/model/CASTAT_LOW>
+        rdf:type    <http://edg.topbraid.solutions/model/ComplianceAssuranceStatus>;
+        rdfs:label  "Low";
+        <http://www.linkedmodel.org/schema/dtype#code>  "3";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "cal";
+        <http://www.linkedmodel.org/schema/dtype#order>  3 .
+
+<http://edg.topbraid.solutions/model/ComplianceAssuranceStatus>
+        rdf:type      <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label    "Compliance Assurance Status";
+        rdfs:comment  "\n<p><strong>Compliance Assurance Status</strong> is an enumeration that specifies the degree to which an asset \nhas compliance.</p>\n";
+        <http://edg.topbraid.solutions/model/acronym>  "CASTAT" .
+
+<http://edg.topbraid.solutions/model/USCIS_TOPSECRET>
+        rdf:type    <http://edg.topbraid.solutions/model/USgovClassifiedInformationSystem>;
+        rdfs:label  "Top Secret";
+        <http://edg.topbraid.solutions/model/description>  "\"Top Secret\" shall be applied to information, the unauthorized disclosure of which reasonably could be expected to cause exceptionally grave damage to the national security that the original classification authority is able to identify or describe [US Executive Order 12958]."^^rdf:HTML;
+        <http://www.linkedmodel.org/schema/dtype#code>  "6";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "topsecret";
+        <http://www.linkedmodel.org/schema/dtype#order>  7 .
+
+<http://edg.topbraid.solutions/model/THREELRS_MEDIUM>
+        rdf:type    <http://edg.topbraid.solutions/model/ThreeLevelRatingScale>;
+        rdfs:label  "Medium";
+        <http://edg.topbraid.solutions/model/name>  "medium";
+        <http://www.linkedmodel.org/schema/dtype#code>  "2";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "medium";
+        <http://www.linkedmodel.org/schema/dtype#order>  2 .
+
+<http://edg.topbraid.solutions/model/FRQCHG_DAILY>
+        rdf:type      <http://edg.topbraid.solutions/model/FrequencyOfChange>;
+        rdfs:label    "Daily";
+        rdfs:comment  "Changes are every day";
+        <http://www.linkedmodel.org/schema/dtype#code>  "8";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "biweekly";
+        <http://www.linkedmodel.org/schema/dtype#order>  8 .
+
+<http://edg.topbraid.solutions/model/PDUC_LEGALLY-AUTHORIZED-REQUEST-OVERRIDES-NEED-FOR-DATA-SUBJECT-CONSENT>
+        rdf:type    <http://edg.topbraid.solutions/model/PersonalDataUseConsent>;
+        rdfs:label  "Legally Authorized Request Overrides Need For Data Subject Consent";
+        <http://www.linkedmodel.org/schema/dtype#code>  "PDUCC03";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "legal-override" .
+
+<http://edg.topbraid.solutions/model/PDUC_NO-CONSENT-REQUIRED>
+        rdf:type    <http://edg.topbraid.solutions/model/PersonalDataUseConsent>;
+        rdfs:label  "No Consent Required";
+        <http://www.linkedmodel.org/schema/dtype#code>  "PDUCC04";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "na" .
+
+<http://edg.topbraid.solutions/model/MT_DATA-QUALITY>
+        rdf:type    <http://edg.topbraid.solutions/model/MetricType>;
+        rdfs:label  "Data Quality Metric";
+        <http://www.linkedmodel.org/schema/dtype#code>  "2";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "data-quality" .
+
+<http://edg.topbraid.solutions/model/ASSETSTAT_FinalStatus>
+        rdf:type    <http://edg.topbraid.solutions/model/AssetStatus>;
+        rdfs:label  "Final Status";
+        <http://www.linkedmodel.org/schema/dtype#code>  "4";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "final";
+        <http://www.linkedmodel.org/schema/dtype#order>  4 .
+
+<http://edg.topbraid.solutions/model/FIVELRS_MEDIUM>
+        rdf:type    <http://edg.topbraid.solutions/model/FiveLevelRatingScale>;
+        rdfs:label  "Medium";
+        <http://edg.topbraid.solutions/model/name>  "medium";
+        <http://www.linkedmodel.org/schema/dtype#code>  "3";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "medium";
+        <http://www.linkedmodel.org/schema/dtype#order>  3 .
+
+<http://edg.topbraid.solutions/model/ModalRequirementType>
+        rdf:type    <http://edg.topbraid.solutions/model/EDGenumerationClass>;
+        rdfs:label  "Modal Requirement Type";
+        <http://edg.topbraid.solutions/model/acronym>  "MRT" .
+
+<http://edg.topbraid.solutions/model/FIVELRS_LOW>
+        rdf:type    <http://edg.topbraid.solutions/model/FiveLevelRatingScale>;
+        rdfs:label  "Low";
+        <http://edg.topbraid.solutions/model/name>  "low";
+        <http://www.linkedmodel.org/schema/dtype#code>  "2";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "low";
+        <http://www.linkedmodel.org/schema/dtype#order>  2 .
+
+<http://edg.topbraid.solutions/model/FRQCHG_SUBHOURLY>
+        rdf:type      <http://edg.topbraid.solutions/model/FrequencyOfChange>;
+        rdfs:label    "Sub-Hourly";
+        rdfs:comment  "Changes happen a number of times in an hour";
+        <http://www.linkedmodel.org/schema/dtype#code>  "10";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "subhourly";
+        <http://www.linkedmodel.org/schema/dtype#order>  10 .
+
+<http://edg.topbraid.solutions/model/FIVELRS_VERYHIGH>
+        rdf:type    <http://edg.topbraid.solutions/model/FiveLevelRatingScale>;
+        rdfs:label  "Very High";
+        <http://edg.topbraid.solutions/model/name>  "very_high";
+        <http://www.linkedmodel.org/schema/dtype#code>  "5";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "very_high";
+        <http://www.linkedmodel.org/schema/dtype#order>  5 .
+
+<http://edg.topbraid.solutions/model/FRQCHG_ADHOC>
+        rdf:type      <http://edg.topbraid.solutions/model/FrequencyOfChange>;
+        rdfs:label    "Ad-Hoc";
+        rdfs:comment  "Changes are not at any specific frequency";
+        <http://www.linkedmodel.org/schema/dtype#code>  "2";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "adhoc";
+        <http://www.linkedmodel.org/schema/dtype#order>  2 .
+
+<http://edg.topbraid.solutions/model/ATHRZTNM_ASSET_BASED>
+        rdf:type      <http://edg.topbraid.solutions/model/AuthorizationMethod>;
+        rdfs:label    "Asset-Based Authorization";
+        rdfs:comment  "Authorization is governed at the individual asset level.";
+        <http://www.linkedmodel.org/schema/dtype#code>  "10";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "aba";
+        <http://www.linkedmodel.org/schema/dtype#order>  10 .
+
+<http://edg.topbraid.solutions/model/CASTAT_DONT-KNOW>
+        rdf:type    <http://edg.topbraid.solutions/model/ComplianceAssuranceStatus>;
+        rdfs:label  "Don't Know";
+        <http://www.linkedmodel.org/schema/dtype#code>  "1";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "cadk";
+        <http://www.linkedmodel.org/schema/dtype#order>  1 .
+
+<http://edg.topbraid.solutions/model/PCAM_RANDOM-MANUAL-SAMPLES>
+        rdf:type    <http://edg.topbraid.solutions/model/PolicyComplianceAssuranceMethod>;
+        rdfs:label  "Random Manual Samples";
+        <http://www.linkedmodel.org/schema/dtype#code>  "1";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "random-samples";
+        <http://www.linkedmodel.org/schema/dtype#order>  2 .
+
+<http://edg.topbraid.solutions/model/IMPACTSCALE_MEDIUM>
+        rdf:type    <http://edg.topbraid.solutions/model/ImpactScale>;
+        rdfs:label  "Medium";
+        <http://edg.topbraid.solutions/model/name>  "medium";
+        <http://www.linkedmodel.org/schema/dtype#code>  "4";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "medium";
+        <http://www.linkedmodel.org/schema/dtype#order>  4 .
+
+<http://edg.topbraid.solutions/model/ARR_AAR>
+        rdf:type      <http://edg.topbraid.solutions/model/AccessRightRestriction>;
+        rdfs:label    "All Access Restricted";
+        rdfs:comment  "All access is prohibited.";
+        <http://www.linkedmodel.org/schema/dtype#code>  "5";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "aar";
+        <http://www.linkedmodel.org/schema/dtype#order>  5 .
+
+<http://edg.topbraid.solutions/model/PCAM_NONE>
+        rdf:type    <http://edg.topbraid.solutions/model/PolicyComplianceAssuranceMethod>;
+        rdfs:label  "None";
+        <http://www.linkedmodel.org/schema/dtype#code>  "0";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "none";
+        <http://www.linkedmodel.org/schema/dtype#order>  1 .
+
+<http://edg.topbraid.solutions/model/APPROVAL-STATUS_ON-HOLD>
+        rdf:type    <http://edg.topbraid.solutions/model/ApprovalStatus>;
+        rdfs:label  "On Hold";
+        <http://www.linkedmodel.org/schema/dtype#code>  "2";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "on-hold" .
+
+<http://edg.topbraid.solutions/model/FRQCHG_QUARTERLY>
+        rdf:type      <http://edg.topbraid.solutions/model/FrequencyOfChange>;
+        rdfs:label    "Quarterly";
+        rdfs:comment  "Changes are four times a year";
+        <http://www.linkedmodel.org/schema/dtype#code>  "4";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "quarterly";
+        <http://www.linkedmodel.org/schema/dtype#order>  4 .
+
+<http://edg.topbraid.solutions/model/ConfidentialityLevel_UNRESTRICTED>
+        rdf:type    <http://edg.topbraid.solutions/model/ConfidentialityLevel>;
+        rdfs:label  "Unrestricted";
+        <http://www.linkedmodel.org/schema/dtype#code>  "2";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "unrestricted" .
+
+<http://edg.topbraid.solutions/model/FRQCHG_WEEKLY>
+        rdf:type      <http://edg.topbraid.solutions/model/FrequencyOfChange>;
+        rdfs:label    "Weekly";
+        rdfs:comment  "Changes are every week";
+        <http://www.linkedmodel.org/schema/dtype#code>  "7";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "weekly";
+        <http://www.linkedmodel.org/schema/dtype#order>  7 .
+
+<http://edg.topbraid.solutions/model/ATHNTCTNM_DYNAMIC_PASSWORD>
+        rdf:type      <http://edg.topbraid.solutions/model/AuthenticationMethod>;
+        rdfs:label    "Dynamic Password";
+        rdfs:comment  "In this method the token device and the authentication service must hold the same time within their internal clocks. The time value on the token device and a secret key are used to create a one time password. This password is decrypted by the server and compares it to the value that is expected, for example, SecureID.";
+        <http://www.linkedmodel.org/schema/dtype#code>  "8";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "dynamic_pasword";
+        <http://www.linkedmodel.org/schema/dtype#order>  8 .
+
+<http://edg.topbraid.solutions/model/ACM_MAC>
+        rdf:type      <http://edg.topbraid.solutions/model/AccessControlMethod>;
+        rdfs:label    "Mandatory Access Control";
+        rdfs:comment  "Mandatory access control (MAC) is a security model in which access rights are regulated by a central authority based on multiple levels of security. Often used in government and military environments, classifications are assigned to system resources and the operating system or security kernel, grants or denies access to those resource objects based on the information security clearance of the user or device. For example, Security Enhanced Linux is an implementation of MAC on the Linux operating system, [Source: https://searchsecurity.techtarget.com/definition/access-control].";
+        <http://www.linkedmodel.org/schema/dtype#code>  "1";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "mac";
+        <http://www.linkedmodel.org/schema/dtype#order>  1 .
+
+<http://edg.topbraid.solutions/model/CMMICMLVL_MEASURED>
+        rdf:type    <http://edg.topbraid.solutions/model/CMMIcapabilityMaturityLevel>;
+        rdfs:label  "Measured";
+        <http://www.linkedmodel.org/schema/dtype#code>  "4";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "measured";
+        <http://www.linkedmodel.org/schema/dtype#order>  4 .
+
+<http://edg.topbraid.solutions/model/CASTAT_VERY-LOW>
+        rdf:type    <http://edg.topbraid.solutions/model/ComplianceAssuranceStatus>;
+        rdfs:label  "Very Low";
+        <http://www.linkedmodel.org/schema/dtype#code>  "2";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "cavl";
+        <http://www.linkedmodel.org/schema/dtype#order>  2 .
+
+<http://edg.topbraid.solutions/model/USCIS_NONE>
+        rdf:type    <http://edg.topbraid.solutions/model/USgovClassifiedInformationSystem>;
+        rdfs:label  "None";
+        <http://www.linkedmodel.org/schema/dtype#code>  "0";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "none";
+        <http://www.linkedmodel.org/schema/dtype#order>  1 .
+
+<http://edg.topbraid.solutions/model/PDUC_DATA-SUBJECT-CONSENT-REQUIRED>
+        rdf:type    <http://edg.topbraid.solutions/model/PersonalDataUseConsent>;
+        rdfs:label  "Data Subject Consent Required";
+        <http://www.linkedmodel.org/schema/dtype#code>  "PDUCC02";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "data-subject-based" .
+
+<http://edg.topbraid.solutions/model/FIVELRS_VERYLOW>
+        rdf:type    <http://edg.topbraid.solutions/model/FiveLevelRatingScale>;
+        rdfs:label  "Very Low";
+        <http://edg.topbraid.solutions/model/name>  "very_low";
+        <http://www.linkedmodel.org/schema/dtype#code>  "1";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "very_low";
+        <http://www.linkedmodel.org/schema/dtype#order>  1 .
+
+<http://edg.topbraid.solutions/model/IMPACTSCALE_MARGINAL>
+        rdf:type    <http://edg.topbraid.solutions/model/ImpactScale>;
+        rdfs:label  "Marginal";
+        <http://edg.topbraid.solutions/model/name>  "marginal";
+        <http://www.linkedmodel.org/schema/dtype#code>  "2";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "marginal";
+        <http://www.linkedmodel.org/schema/dtype#order>  2 .
+
+<http://edg.topbraid.solutions/model/ATHRZTNM_ACL>
+        rdf:type      <http://edg.topbraid.solutions/model/AuthorizationMethod>;
+        rdfs:label    "Access Control List";
+        rdfs:comment  "Use of Access Control Lists (ACLs).";
+        <http://www.linkedmodel.org/schema/dtype#code>  "3";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "acl";
+        <http://www.linkedmodel.org/schema/dtype#order>  3 .
+
+<http://edg.topbraid.solutions/model/CASTAT_HIGH>
+        rdf:type    <http://edg.topbraid.solutions/model/ComplianceAssuranceStatus>;
+        rdfs:label  "High";
+        <http://www.linkedmodel.org/schema/dtype#code>  "4";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "cah";
+        <http://www.linkedmodel.org/schema/dtype#order>  4 .
+
+<http://edg.topbraid.solutions/model/ISSUE-STATUS_WAIVERED>
+        rdf:type    <http://edg.topbraid.solutions/model/IssueStatus>;
+        rdfs:label  "Waivered";
+        <http://www.linkedmodel.org/schema/dtype#code>  "3";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "waivered" .
+
+<http://edg.topbraid.solutions/model/MT_PII>
+        rdf:type    <http://edg.topbraid.solutions/model/MetricType>;
+        rdfs:label  "Personal Identifiable Information (PII) Metric";
+        <http://www.linkedmodel.org/schema/dtype#code>  "34";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "pii" .
+
+<http://edg.topbraid.solutions/model/APPROVAL-STATUS_APPROVED>
+        rdf:type    <http://edg.topbraid.solutions/model/ApprovalStatus>;
+        rdfs:label  "Approved";
+        <http://www.linkedmodel.org/schema/dtype#code>  "5";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "approved" .
+
+<http://edg.topbraid.solutions/model/RLNC_METHOD-COUNTER>
+        rdf:type      <http://edg.topbraid.solutions/model/ResourceLocalNameConstructMethod>;
+        rdfs:label    "Counter local name constructor";
+        rdfs:comment  "Use counter for local name";
+        <http://www.linkedmodel.org/schema/dtype#code>  "3";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "counter";
+        <http://www.linkedmodel.org/schema/dtype#order>  3 .
+
+<http://edg.topbraid.solutions/model/USCIS_PUBLICTRUST>
+        rdf:type    <http://edg.topbraid.solutions/model/USgovClassifiedInformationSystem>;
+        rdfs:label  "Public Trust";
+        <http://edg.topbraid.solutions/model/description>  "Despite common misconception, a public trust position is not a security clearance, and is not the same as the confidential clearance. Certain positions which require access to sensitive information, but not information which is classified, must obtain this designation through a background check. Public Trust Positions can either be moderate-risk or high-risk."^^rdf:HTML;
+        <http://www.linkedmodel.org/schema/dtype#code>  "1";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "public trust";
+        <http://www.linkedmodel.org/schema/dtype#order>  1 .
+
+<http://edg.topbraid.solutions/model/ATHNTCTNM_CRYPTOGRAPHIC_KEY>
+        rdf:type      <http://edg.topbraid.solutions/model/AuthenticationMethod>;
+        rdfs:label    "Cryptographic Key";
+        rdfs:comment  "Use of private keys and Digital Signatures.";
+        <http://www.linkedmodel.org/schema/dtype#code>  "7";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "cryptographic_key";
+        <http://www.linkedmodel.org/schema/dtype#order>  7 .
+
+<http://edg.topbraid.solutions/model/RLNC_METHOD-CUSTOM>
+        rdf:type      <http://edg.topbraid.solutions/model/ResourceLocalNameConstructMethod>;
+        rdfs:label    "Custom local name constructor";
+        rdfs:comment  "URI must be entered by the user";
+        <http://www.linkedmodel.org/schema/dtype#code>  "4";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "custom";
+        <http://www.linkedmodel.org/schema/dtype#order>  4 .
+
+<http://edg.topbraid.solutions/model/ATHRZTNM_ROLE-BASED>
+        rdf:type      <http://edg.topbraid.solutions/model/AuthorizationMethod>;
+        rdfs:label    "Role-Based Authorization";
+        rdfs:comment  "Authorization is based on the user's role.";
+        <http://www.linkedmodel.org/schema/dtype#code>  "4";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "rba";
+        <http://www.linkedmodel.org/schema/dtype#order>  4 .
+
+<http://edg.topbraid.solutions/model/ConfidentialityLevel_CONFIDENTIAL>
+        rdf:type    <http://edg.topbraid.solutions/model/ConfidentialityLevel>;
+        rdfs:label  "Confidential";
+        <http://edg.topbraid.solutions/model/description>  "The lowest classification level (Level 1)."^^rdf:HTML;
+        <http://www.linkedmodel.org/schema/dtype#code>  "2";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "confidential";
+        <http://www.linkedmodel.org/schema/dtype#order>  2 .
+
+<http://edg.topbraid.solutions/model/ASSETSTAT_DeprecatedStatus>
+        rdf:type    <http://edg.topbraid.solutions/model/AssetStatus>;
+        rdfs:label  "Deprecated";
+        <http://www.linkedmodel.org/schema/dtype#code>  "8";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "deprecated";
+        <http://www.linkedmodel.org/schema/dtype#order>  8 .
+
+<http://edg.topbraid.solutions/model/USCIS_CONFIDENTIAL>
+        rdf:type    <http://edg.topbraid.solutions/model/USgovClassifiedInformationSystem>;
+        rdfs:label  "Confidential";
+        <http://edg.topbraid.solutions/model/description>  "The lowest classification level (Level 1). It is defined as information which would \"damage\" national security if disclosed. \"Confidential\" shall be applied to information, the unauthorized disclosure of which reasonably could be expected to cause damage to the national security that the original classification authority is able to identify or describe [US Executive Order 12958]."^^rdf:HTML;
+        <http://www.linkedmodel.org/schema/dtype#code>  "4";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "confidential";
+        <http://www.linkedmodel.org/schema/dtype#order>  5 .
+
+<http://edg.topbraid.solutions/model/FIVELRS_HIGH>
+        rdf:type    <http://edg.topbraid.solutions/model/FiveLevelRatingScale>;
+        rdfs:label  "High";
+        <http://edg.topbraid.solutions/model/name>  "high";
+        <http://www.linkedmodel.org/schema/dtype#code>  "4";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "high";
+        <http://www.linkedmodel.org/schema/dtype#order>  4 .
+
+<http://edg.topbraid.solutions/model/ConfidentialityLevel_NEEDTOKNOW>
+        rdf:type    <http://edg.topbraid.solutions/model/ConfidentialityLevel>;
+        rdfs:label  "Need To Know";
+        <http://www.linkedmodel.org/schema/dtype#code>  "1";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "need-to-know";
+        <http://www.linkedmodel.org/schema/dtype#order>  1 .
+
+<http://edg.topbraid.solutions/model/CASTAT_NOTAPPLICABLE>
+        rdf:type    <http://edg.topbraid.solutions/model/ComplianceAssuranceStatus>;
+        rdfs:label  "Not Applicable";
+        <http://www.linkedmodel.org/schema/dtype#code>  "6";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "cana";
+        <http://www.linkedmodel.org/schema/dtype#order>  6 .
+
+<http://edg.topbraid.solutions/model/IMPACTSCALE_CRITICAL>
+        rdf:type    <http://edg.topbraid.solutions/model/ImpactScale>;
+        rdfs:label  "Critical";
+        <http://edg.topbraid.solutions/model/name>  "critical";
+        <http://www.linkedmodel.org/schema/dtype#code>  "6";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "critical";
+        <http://www.linkedmodel.org/schema/dtype#order>  6 .
+
+<http://edg.topbraid.solutions/model/ATHNTCTNM_PASSWORD>
+        rdf:type      <http://edg.topbraid.solutions/model/AuthenticationMethod>;
+        rdfs:label    "Password";
+        rdfs:comment  "Verifies an individuals identity by asking for a protected passworD, the most common method for verifying identification.";
+        <http://www.linkedmodel.org/schema/dtype#code>  "3";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "pasword";
+        <http://www.linkedmodel.org/schema/dtype#order>  3 .
+
+<http://edg.topbraid.solutions/model/CMMICMLVL_PERFORMED>
+        rdf:type    <http://edg.topbraid.solutions/model/CMMIcapabilityMaturityLevel>;
+        rdfs:label  "Performed";
+        <http://www.linkedmodel.org/schema/dtype#code>  "1";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "performed";
+        <http://www.linkedmodel.org/schema/dtype#order>  1 .
+
+<http://edg.topbraid.solutions/model/USCIS_UNCLASSIFIED>
+        rdf:type    <http://edg.topbraid.solutions/model/USgovClassifiedInformationSystem>;
+        rdfs:label  "Unclassified";
+        <http://edg.topbraid.solutions/model/description>  "<p>Unclassified is not technically a \"classification\"; this is the default, and refers to information that can be released to individuals without a clearance (Level 0). Information that is unclassified is sometimes restricted in its dissemination as SBU or FOUO. For example, the \"law enforcement bulletins\" often reported by the U.S. media when United States Department of Homeland Security raises the U.S. terror threat level are usually classified as \"U//LES\" or \"Unclassified - Law Enforcement Sensitive.\"</p>\n<p>This information is only supposed to be released to Law Enforcement groups (Sheriff, Police, etc.) Because the information is unclassified, however, it is sometimes released to the public as well. Information which is unclassified, but which the government does not believe should be subject to Freedom of Information Act requests is often classified as U//FOUO - \"Unclassified - For Official Use Only\". </p>\n<p>In addition to FOUO information, information can be categorized according to its availability to be distributed (Distribution D may only be released to approved Department of Defense and Government Contractor personnel). Also, the statement of NOFORN (meaning No Foreign Nationals) is applied to any information which may not be released to any non-US Citizen. NOFORN and Distribution statements are often used in conjunction with classified information or alone on SBU information. Documents subject to export controls have a specific warning to that effect.</p>"^^rdf:HTML;
+        <http://www.linkedmodel.org/schema/dtype#code>  "1";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "unclassified";
+        <http://www.linkedmodel.org/schema/dtype#order>  1 .
+
+<http://edg.topbraid.solutions/model/ConfidentialityLevel_NONE>
+        rdf:type    <http://edg.topbraid.solutions/model/ConfidentialityLevel>;
+        rdfs:label  "None";
+        <http://www.linkedmodel.org/schema/dtype#code>  "0";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "none";
+        <http://www.linkedmodel.org/schema/dtype#order>  0 .
+
+<http://edg.topbraid.solutions/model/IMPACTSCALE_SIGNIFICANT>
+        rdf:type    <http://edg.topbraid.solutions/model/ImpactScale>;
+        rdfs:label  "Significant";
+        <http://edg.topbraid.solutions/model/name>  "significant";
+        <http://www.linkedmodel.org/schema/dtype#code>  "7";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "significant";
+        <http://www.linkedmodel.org/schema/dtype#order>  7 .
+
+<http://edg.topbraid.solutions/model/PCAM_SEMI-AUTOMATED>
+        rdf:type    <http://edg.topbraid.solutions/model/PolicyComplianceAssuranceMethod>;
+        rdfs:label  "Semi-Automated";
+        <http://www.linkedmodel.org/schema/dtype#code>  "3";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "semi-automated";
+        <http://www.linkedmodel.org/schema/dtype#order>  4 .
+
+<http://edg.topbraid.solutions/model/ATHNTCTNM_BIOMETRICS>
+        rdf:type      <http://edg.topbraid.solutions/model/AuthenticationMethod>;
+        rdfs:label    "Biometrics";
+        rdfs:comment  "Verifies an individuals identity by analyzing a unique personal attribute or behavor. It is the most effective and accurate method for verifying identification and the most expensive authentication mechanism";
+        <http://www.linkedmodel.org/schema/dtype#code>  "11";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "biometrics";
+        <http://www.linkedmodel.org/schema/dtype#order>  10 .
+
+<http://edg.topbraid.solutions/model/ATHRZTNM_AFFILIATION_BASED>
+        rdf:type      <http://edg.topbraid.solutions/model/AuthorizationMethod>;
+        rdfs:label    "Affiliation-Based Authorization";
+        rdfs:comment  "Authorization is based on the organization or group that the user belongs to.";
+        <http://www.linkedmodel.org/schema/dtype#code>  "6";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "affiliation";
+        <http://www.linkedmodel.org/schema/dtype#order>  6 .
+
+<http://edg.topbraid.solutions/model/ATHRZTNM_UNKNOWN>
+        rdf:type      <http://edg.topbraid.solutions/model/AuthorizationMethod>;
+        rdfs:label    "Unknown";
+        rdfs:comment  "Authorization methods are not known.";
+        <http://www.linkedmodel.org/schema/dtype#code>  "2";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "unknown";
+        <http://www.linkedmodel.org/schema/dtype#order>  2 .
+
+<http://edg.topbraid.solutions/model/ISSUE-STATUS_DEFERRED>
+        rdf:type    <http://edg.topbraid.solutions/model/IssueStatus>;
+        rdfs:label  "Deferred";
+        <http://www.linkedmodel.org/schema/dtype#code>  "4";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "deferred" .
+
+<http://edg.topbraid.solutions/model/ACM_RBAC>
+        rdf:type      <http://edg.topbraid.solutions/model/AccessControlMethod>;
+        rdfs:label    "Role-Based Access Control";
+        rdfs:comment  "Role-based access control (RBAC) is a widely used access control mechanism that restricts access to computer resources based on individuals or groups with defined business functions -- executive level, engineer level 1 -- rather than the identities of individual users. The role-based security model relies on a complex structure of role assignments, role authorizations and role permissions developed using role engineering to regulate employee access to systems. RBAC systems can be used to enforce MAC and DAC frameworks., [Source: https://searchsecurity.techtarget.com/definition/access-control].";
+        <http://www.linkedmodel.org/schema/dtype#code>  "3";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "rbac";
+        <http://www.linkedmodel.org/schema/dtype#order>  3 .
+
+<http://edg.topbraid.solutions/model/IMPACTSCALE_HIGH>
+        rdf:type    <http://edg.topbraid.solutions/model/ImpactScale>;
+        rdfs:label  "High";
+        <http://edg.topbraid.solutions/model/name>  "high";
+        <http://www.linkedmodel.org/schema/dtype#code>  "5";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "high";
+        <http://www.linkedmodel.org/schema/dtype#order>  5 .
+
+<http://edg.topbraid.solutions/model/CASTAT_VERY-HIGH>
+        rdf:type    <http://edg.topbraid.solutions/model/ComplianceAssuranceStatus>;
+        rdfs:label  "Very High";
+        <http://www.linkedmodel.org/schema/dtype#code>  "5";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "cavh";
+        <http://www.linkedmodel.org/schema/dtype#order>  5 .
+
+<http://edg.topbraid.solutions/model/ISSUE-STATUS_RESOLVED>
+        rdf:type    <http://edg.topbraid.solutions/model/IssueStatus>;
+        rdfs:label  "Resolved";
+        <http://www.linkedmodel.org/schema/dtype#code>  "2";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "resolved" .
+
+<http://edg.topbraid.solutions/model/CMMICMLVLI_DEFINED>
+        rdf:type    <http://edg.topbraid.solutions/model/CMMIcapabilityMaturityLevel>;
+        rdfs:label  "Defined";
+        <http://www.linkedmodel.org/schema/dtype#code>  "3";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "defined";
+        <http://www.linkedmodel.org/schema/dtype#order>  3 .
+
+<http://edg.topbraid.solutions/model/ACM_DAC>
+        rdf:type      <http://edg.topbraid.solutions/model/AccessControlMethod>;
+        rdfs:label    "Discretionary Access Control";
+        rdfs:comment  "Discretionary access control (DAC) is an access control method in which owners or administrators of the protected system, data or resource set the policies defining who or what is authorized to access the resource. Many of these systems enable administrators to limit the propagation of access rights. A common criticism of DAC systems is a lack of centralized control, [Source: https://searchsecurity.techtarget.com/definition/access-control].";
+        <http://www.linkedmodel.org/schema/dtype#code>  "2";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "dac";
+        <http://www.linkedmodel.org/schema/dtype#order>  2 .
+
+<http://edg.topbraid.solutions/model/RLNC_METHOD-LABEL>
+        rdf:type      <http://edg.topbraid.solutions/model/ResourceLocalNameConstructMethod>;
+        rdfs:label    "Label local name constructor";
+        rdfs:comment  "Use label for local name";
+        <http://www.linkedmodel.org/schema/dtype#code>  "1";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "label";
+        <http://www.linkedmodel.org/schema/dtype#order>  1 .
+
+<http://edg.topbraid.solutions/model/ASSETSTAT_SupercededStatus>
+        rdf:type    <http://edg.topbraid.solutions/model/AssetStatus>;
+        rdfs:label  "Superceded";
+        <http://www.linkedmodel.org/schema/dtype#code>  "9";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "superceded";
+        <http://www.linkedmodel.org/schema/dtype#order>  9 .
+
+<http://edg.topbraid.solutions/model/ConfidentialityLevel_TOPSECRET>
+        rdf:type    <http://edg.topbraid.solutions/model/ConfidentialityLevel>;
+        rdfs:label  "Top Secret";
+        <http://www.linkedmodel.org/schema/dtype#code>  "4";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "topsecret";
+        <http://www.linkedmodel.org/schema/dtype#order>  4 .
+
+<http://edg.topbraid.solutions/model/ASSETSTAT_InitialStatus>
+        rdf:type    <http://edg.topbraid.solutions/model/AssetStatus>;
+        rdfs:label  "Initial Status";
+        <http://www.linkedmodel.org/schema/dtype#code>  "1";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "initial";
+        <http://www.linkedmodel.org/schema/dtype#order>  1 .
+
+<http://edg.topbraid.solutions/model/THREELRS_LOW>
+        rdf:type    <http://edg.topbraid.solutions/model/ThreeLevelRatingScale>;
+        rdfs:label  "Low";
+        <http://edg.topbraid.solutions/model/name>  "low";
+        <http://www.linkedmodel.org/schema/dtype#code>  "1";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "low";
+        <http://www.linkedmodel.org/schema/dtype#order>  1 .
+
+<http://edg.topbraid.solutions/codelist/core/GMD_core>
+        rdf:type  <http://www.linkedmodel.org/schema/vaem#GraphMetaData>;
+        <http://purl.org/dc/terms/modified>  "2023-09-05"^^xsd:date .
+
+<http://edg.topbraid.solutions/model/IMPACTSCALE_LOW>
+        rdf:type    <http://edg.topbraid.solutions/model/ImpactScale>;
+        rdfs:label  "Low";
+        <http://edg.topbraid.solutions/model/name>  "low";
+        <http://www.linkedmodel.org/schema/dtype#code>  "3";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "low";
+        <http://www.linkedmodel.org/schema/dtype#order>  3 .
+
+<http://edg.topbraid.solutions/model/ASSETSTAT_SynchronizedStatus>
+        rdf:type    <http://edg.topbraid.solutions/model/AssetStatus>;
+        rdfs:label  "Synchronized";
+        <http://www.linkedmodel.org/schema/dtype#code>  "10";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "synchronized";
+        <http://www.linkedmodel.org/schema/dtype#order>  10 .
+
+<http://edg.topbraid.solutions/model/ATHNTCTNM_PASSPHRASE>
+        rdf:type      <http://edg.topbraid.solutions/model/AuthenticationMethod>;
+        rdfs:label    "Passphrase";
+        rdfs:comment  "Use of private keys and Digital Signatures.";
+        <http://www.linkedmodel.org/schema/dtype#code>  "6";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "passphrase";
+        <http://www.linkedmodel.org/schema/dtype#order>  6 .
+
+<http://edg.topbraid.solutions/model/ATHNTCTNM_MEMORY_CARD>
+        rdf:type      <http://edg.topbraid.solutions/model/AuthenticationMethod>;
+        rdfs:label    "Memory Card";
+        rdfs:comment  "Holds information but cannot process them. For example ATM cards";
+        <http://www.linkedmodel.org/schema/dtype#code>  "9";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "memory_card";
+        <http://www.linkedmodel.org/schema/dtype#order>  9 .
+
+<http://edg.topbraid.solutions/model/CMMICMLVL_OPTIMIZED>
+        rdf:type    <http://edg.topbraid.solutions/model/CMMIcapabilityMaturityLevel>;
+        rdfs:label  "Optimized";
+        <http://www.linkedmodel.org/schema/dtype#code>  "5";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "optimized";
+        <http://www.linkedmodel.org/schema/dtype#order>  5 .
+
+<http://edg.topbraid.solutions/model/ATHRZTNM_PROPERTY_BASED>
+        rdf:type      <http://edg.topbraid.solutions/model/AuthorizationMethod>;
+        rdfs:label    "Property-Based Authorization";
+        rdfs:comment  "Authorization is governed at the individual property level.";
+        <http://www.linkedmodel.org/schema/dtype#code>  "11";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "pba";
+        <http://www.linkedmodel.org/schema/dtype#order>  11 .
+
+<http://edg.topbraid.solutions/model/PCAM_AUTOMATED>
+        rdf:type    <http://edg.topbraid.solutions/model/PolicyComplianceAssuranceMethod>;
+        rdfs:label  "Automated";
+        <http://www.linkedmodel.org/schema/dtype#code>  "4";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "automated";
+        <http://www.linkedmodel.org/schema/dtype#order>  5 .
+
+<http://edg.topbraid.solutions/model/ATHRZTNM_ASSET_TYPE_BASED>
+        rdf:type      <http://edg.topbraid.solutions/model/AuthorizationMethod>;
+        rdfs:label    "Asset-Type-Based Authorization";
+        rdfs:comment  "Authorization is governed at the individual asset type level.";
+        <http://www.linkedmodel.org/schema/dtype#code>  "9";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "atba";
+        <http://www.linkedmodel.org/schema/dtype#order>  9 .
+
+<http://edg.topbraid.solutions/model/IMPACTSCALE_CATASTROPHIC>
+        rdf:type    <http://edg.topbraid.solutions/model/ImpactScale>;
+        rdfs:label  "Catastrophic";
+        <http://edg.topbraid.solutions/model/name>  "Catastrophic";
+        <http://www.linkedmodel.org/schema/dtype#code>  "8";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "catastrophic";
+        <http://www.linkedmodel.org/schema/dtype#order>  8 .
+
+<http://edg.topbraid.solutions/model/FRQCHG_HOURLY>
+        rdf:type      <http://edg.topbraid.solutions/model/FrequencyOfChange>;
+        rdfs:label    "Hourly";
+        rdfs:comment  "Changes are every hour";
+        <http://www.linkedmodel.org/schema/dtype#code>  "9";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "hourly";
+        <http://www.linkedmodel.org/schema/dtype#order>  9 .
+
+<http://edg.topbraid.solutions/model/ATHNTCTNM_ONCE_ONLY_PASSWORD>
+        rdf:type      <http://edg.topbraid.solutions/model/AuthenticationMethod>;
+        rdfs:label    "Once Only Password";
+        rdfs:comment  "A token based system used for authentication purposes where the service is used only once.";
+        <http://www.linkedmodel.org/schema/dtype#code>  "5";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "once_only_pasword";
+        <http://www.linkedmodel.org/schema/dtype#order>  5 .
+
+<http://edg.topbraid.solutions/model/ATHNTCTNM_NONE>
+        rdf:type      <http://edg.topbraid.solutions/model/AuthenticationMethod>;
+        rdfs:label    "None";
+        rdfs:comment  "No authentication.";
+        <http://www.linkedmodel.org/schema/dtype#code>  "1";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "none";
+        <http://www.linkedmodel.org/schema/dtype#order>  1 .
+
+<http://edg.topbraid.solutions/model/APPROVAL-STATUS_REJECTED>
+        rdf:type    <http://edg.topbraid.solutions/model/ApprovalStatus>;
+        rdfs:label  "Rejected";
+        <http://www.linkedmodel.org/schema/dtype#code>  "4";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "rejected" .
+
+<http://edg.topbraid.solutions/model/MT_DATA-MANAGEMENT-FUNCTION>
+        rdf:type    <http://edg.topbraid.solutions/model/MetricType>;
+        rdfs:label  "Data Management Function Metric";
+        <http://www.linkedmodel.org/schema/dtype#code>  "1";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "data-management" .
+
+<http://edg.topbraid.solutions/model/USCIS_RESTRICTED>
+        rdf:type    <http://edg.topbraid.solutions/model/USgovClassifiedInformationSystem>;
+        rdfs:label  "Restricted";
+        <http://edg.topbraid.solutions/model/description>  "During and before World War II, the U.S. had a category of classified information called restricted, which was below confidential. The U.S. no longer has a restricted classification, but many other nations and NATO do. The U.S. treats \"restricted\" information it receives from other governments as confidential. The U.S. does use the term restricted data in a completely different way to refer to nuclear secrets."^^rdf:HTML;
+        <http://www.linkedmodel.org/schema/dtype#code>  "3";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "restricted";
+        <http://www.linkedmodel.org/schema/dtype#order>  3 .
+
+<http://edg.topbraid.solutions/model/USCIS_SECRET>
+        rdf:type    <http://edg.topbraid.solutions/model/USgovClassifiedInformationSystem>;
+        rdfs:label  "Secret";
+        <http://edg.topbraid.solutions/model/description>  "\"Secret\" shall be applied to information, the unauthorized disclosure of which reasonably could be expected to cause serious damage to the national security that the original classification authority is able to identify or describe [US Executive Order 12958]."^^rdf:HTML;
+        <http://www.linkedmodel.org/schema/dtype#code>  "5";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "secret";
+        <http://www.linkedmodel.org/schema/dtype#order>  6 .
+
+<http://edg.topbraid.solutions/model/MT_GDPR>
+        rdf:type    <http://edg.topbraid.solutions/model/MetricType>;
+        rdfs:label  "GDPR Metric";
+        <http://www.linkedmodel.org/schema/dtype#code>  "21";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "gdpr" .
+
+<http://edg.topbraid.solutions/model/ARR_NAR>
+        rdf:type      <http://edg.topbraid.solutions/model/AccessRightRestriction>;
+        rdfs:label    "Nothing is Restricted from Access";
+        rdfs:comment  "All access is allowed.";
+        <http://www.linkedmodel.org/schema/dtype#code>  "1";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "nar";
+        <http://www.linkedmodel.org/schema/dtype#order>  1 .
+
+<http://edg.topbraid.solutions/model/ATHNTCTNM_UNKNOWN>
+        rdf:type      <http://edg.topbraid.solutions/model/AuthenticationMethod>;
+        rdfs:label    "Unknown";
+        rdfs:comment  "Authentication method is not known.";
+        <http://www.linkedmodel.org/schema/dtype#code>  "2";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "unknown";
+        <http://www.linkedmodel.org/schema/dtype#order>  2 .
+
+<http://edg.topbraid.solutions/model/ISSUE-STATUS_OPEN>
+        rdf:type    <http://edg.topbraid.solutions/model/IssueStatus>;
+        rdfs:label  "Open";
+        <http://www.linkedmodel.org/schema/dtype#code>  "1";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "open" .
+
+<http://edg.topbraid.solutions/model/ATHRZTNM_ACCESS_GROUP_BASED>
+        rdf:type      <http://edg.topbraid.solutions/model/AuthorizationMethod>;
+        rdfs:label    "Access-Group-Based Authorization";
+        rdfs:comment  "Authorization is governed by access groups.";
+        <http://www.linkedmodel.org/schema/dtype#code>  "7";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "agba";
+        <http://www.linkedmodel.org/schema/dtype#order>  7 .
+
+<http://edg.topbraid.solutions/model/FRQCHG_MONTHLY>
+        rdf:type      <http://edg.topbraid.solutions/model/FrequencyOfChange>;
+        rdfs:label    "Monthly";
+        rdfs:comment  "Changes are every month";
+        <http://www.linkedmodel.org/schema/dtype#code>  "5";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "monthly";
+        <http://www.linkedmodel.org/schema/dtype#order>  5 .
+
+<http://edg.topbraid.solutions/model/ACM_RuBAC>
+        rdf:type      <http://edg.topbraid.solutions/model/AccessControlMethod>;
+        rdfs:label    "Rule-Based Access Control";
+        rdfs:comment  "Rule-based access control is a security model in which the system administrator defines the rules that to govern access to resource objects. Often these rules are based on conditions, such as time of day or location. It is not uncommon to use some form of both rule-based access control and role-based access control to enforce access policies and procedures., [Source: https://searchsecurity.techtarget.com/definition/access-control].";
+        <http://www.linkedmodel.org/schema/dtype#code>  "4";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "rubac";
+        <http://www.linkedmodel.org/schema/dtype#order>  4 .
+
+<http://edg.topbraid.solutions/model/APPROVAL-STATUS_IN-PROGRESS>
+        rdf:type    <http://edg.topbraid.solutions/model/ApprovalStatus>;
+        rdfs:label  "In Progress";
+        <http://www.linkedmodel.org/schema/dtype#code>  "3";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "in-progress" .
+
+<http://edg.topbraid.solutions/model/ASSETSTAT_InDevelopmentStatus>
+        rdf:type    <http://edg.topbraid.solutions/model/AssetStatus>;
+        rdfs:label  "In Development";
+        <http://www.linkedmodel.org/schema/dtype#code>  "2";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "development";
+        <http://www.linkedmodel.org/schema/dtype#order>  2 .
+
+<http://edg.topbraid.solutions/model/ISSUE-STATUS_CLOSED>
+        rdf:type    <http://edg.topbraid.solutions/model/IssueStatus>;
+        rdfs:label  "Closed";
+        <http://www.linkedmodel.org/schema/dtype#code>  "5";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "closed" .
+
+<http://edg.topbraid.solutions/model/FRQCHG_BIWEEKLY>
+        rdf:type      <http://edg.topbraid.solutions/model/FrequencyOfChange>;
+        rdfs:label    "Bi-Weekly";
+        rdfs:comment  "Changes are every 2 weeks";
+        <http://www.linkedmodel.org/schema/dtype#code>  "6";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "biweekly";
+        <http://www.linkedmodel.org/schema/dtype#order>  6 .
+
+<http://edg.topbraid.solutions/model/APPROVAL-STATUS_NOT-NEEDED>
+        rdf:type    <http://edg.topbraid.solutions/model/ApprovalStatus>;
+        rdfs:label  "Not Needed";
+        <http://www.linkedmodel.org/schema/dtype#code>  "1";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "not-needed" .
+
+<http://edg.topbraid.solutions/model/ARR_DAR>
+        rdf:type      <http://edg.topbraid.solutions/model/AccessRightRestriction>;
+        rdfs:label    "Data Access Restricted";
+        rdfs:comment  "Data access is prohibited.";
+        <http://www.linkedmodel.org/schema/dtype#code>  "4";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "dar";
+        <http://www.linkedmodel.org/schema/dtype#order>  4 .
+
+<http://edg.topbraid.solutions/model/RLNC_METHOD-UUID>
+        rdf:type      <http://edg.topbraid.solutions/model/ResourceLocalNameConstructMethod>;
+        rdfs:label    "UUID local name constructor";
+        rdfs:comment  "Use UUID for local name";
+        <http://www.linkedmodel.org/schema/dtype#code>  "2";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "uuid";
+        <http://www.linkedmodel.org/schema/dtype#order>  2 .
+
+<http://edg.topbraid.solutions/model/APPROVAL-STATUS_UNKNOWN>
+        rdf:type    <http://edg.topbraid.solutions/model/ApprovalStatus>;
+        rdfs:label  "Unknown";
+        <http://www.linkedmodel.org/schema/dtype#code>  "0";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "unknown" .
+
+<http://edg.topbraid.solutions/model/ATHNTCTNM_SMART_CARD>
+        rdf:type      <http://edg.topbraid.solutions/model/AuthenticationMethod>;
+        rdfs:label    "Smart Card";
+        rdfs:comment  "Holds information and has the capability to process information and can provide a two factor authentication (knows and has).";
+        <http://www.linkedmodel.org/schema/dtype#code>  "10";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "smart_card";
+        <http://www.linkedmodel.org/schema/dtype#order>  10 .
+
+<http://edg.topbraid.solutions/model/ACM_ABAC>
+        rdf:type      <http://edg.topbraid.solutions/model/AccessControlMethod>;
+        rdfs:label    "Attribute-Based Access Control";
+        rdfs:comment  "Attribute-based access control (ABAC) is a methodology that manages access rights by evaluating a set of rules, policies and relationships using the attributes of users, systems and environmental conditions, [Source: https://searchsecurity.techtarget.com/definition/access-control].";
+        <http://www.linkedmodel.org/schema/dtype#code>  "5";
+        <http://www.linkedmodel.org/schema/dtype#literal>  "abac";
+        <http://www.linkedmodel.org/schema/dtype#order>  5 .

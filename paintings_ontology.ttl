@@ -1,0 +1,121 @@
+# baseURI: urn:x-evn-master:paintings_ontology
+
+BASE   <urn:x-evn-master:paintings_ontology>
+PREFIX schema: <http://schema.org/>
+PREFIX metadata: <http://topbraid.org/metadata#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX paintings_ontology: <http://topbraid.org/demo/paintings/ontology#>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX teamwork: <http://topbraid.org/teamwork#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dash: <http://datashapes.org/dash#>
+PREFIX graphql: <http://datashapes.org/graphql#>
+
+schema:Painting  sh:property  schema:Painting-about;
+        sh:property  schema:Painting-type;
+        sh:property  schema:Painting-location;
+        sh:property  schema:Painting-creator;
+        sh:property  schema:Painting-dateCreated;
+        sh:property  schema:Painting-title;
+        sh:property  schema:Painting-image .
+
+<urn:x-evn-master:paintings_ontology>
+        owl:imports          <http://datashapes.org/graphql>;
+        owl:imports          <http://topbraid.org/skos.shapes>;
+        owl:imports          <http://datashapes.org/schema>;
+        rdf:type             owl:Ontology;
+        <http://topbraid.org/swa#defaultNamespace>  "http://topbraid.org/demo/paintings/ontology#";
+        rdfs:label           "Sample Paintings Ontology";
+        metadata:status      metadata:UnderDevelopmentStatus;
+        teamwork:rootClass   schema:Thing;
+        graphql:publicClass  schema:Painting .
+
+schema:Thing  rdfs:subClassOf  owl:Thing .
+
+schema:CreativeWork-dateCreated
+        sh:deactivated  true .
+
+schema:Painting-about
+        rdf:type     sh:PropertyShape;
+        sh:order     0.0;
+        sh:path      schema:about;
+        sh:name      "about";
+        sh:group     paintings_ontology:TaggingPropertyGroup;
+        sh:nodeKind  sh:IRI;
+        sh:class     skos:Concept .
+
+paintings_ontology:TaggingPropertyGroup
+        rdf:type    sh:PropertyGroup;
+        rdfs:label  "Tagging Properties";
+        sh:order    "2"^^xsd:decimal .
+
+schema:Painting-type  rdf:type  sh:PropertyShape;
+        sh:order     0.0;
+        sh:path      rdf:type;
+        sh:name      "type";
+        sh:group     paintings_ontology:PaintingPropertyGroup;
+        sh:nodeKind  sh:IRI;
+        sh:class     rdfs:Class .
+
+paintings_ontology:PaintingPropertyGroup
+        rdf:type    sh:PropertyGroup;
+        rdfs:label  "Painting Properties";
+        sh:order    "1"^^xsd:decimal .
+
+schema:Painting-location
+        rdf:type     sh:PropertyShape;
+        sh:order     1.0;
+        sh:path      schema:location;
+        sh:name      "location";
+        sh:group     paintings_ontology:TaggingPropertyGroup;
+        sh:nodeKind  sh:IRI;
+        sh:class     skos:Concept .
+
+schema:Painting-creator
+        rdf:type     sh:PropertyShape;
+        sh:order     3.0;
+        sh:datatype  xsd:string;
+        sh:path      schema:creator;
+        sh:name      "creator";
+        sh:maxCount  1;
+        sh:group     paintings_ontology:PaintingPropertyGroup;
+        sh:nodeKind  sh:Literal .
+
+schema:Painting-dateCreated
+        rdf:type     sh:PropertyShape;
+        sh:order     4.0;
+        sh:datatype  xsd:string;
+        sh:path      schema:dateCreated;
+        sh:name      "creation date";
+        sh:maxCount  1;
+        sh:group     paintings_ontology:PaintingPropertyGroup;
+        sh:nodeKind  sh:Literal .
+
+schema:Painting-title
+        rdf:type     sh:PropertyShape;
+        sh:order     1.0;
+        sh:datatype  xsd:string;
+        sh:path      rdfs:label;
+        sh:name      "title";
+        sh:maxCount  1;
+        sh:minCount  1;
+        sh:group     paintings_ontology:PaintingPropertyGroup .
+
+schema:CreativeWork-about
+        sh:deactivated  true .
+
+schema:CreativeWork-creator
+        sh:deactivated  true .
+
+schema:Painting-image
+        rdf:type     sh:PropertyShape;
+        sh:order     2.0;
+        sh:path      schema:image;
+        sh:name      "image";
+        sh:maxCount  1;
+        sh:group     paintings_ontology:PaintingPropertyGroup;
+        sh:nodeKind  sh:IRI;
+        dash:viewer  dash:ImageViewer .

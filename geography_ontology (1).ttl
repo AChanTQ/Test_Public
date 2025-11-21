@@ -1,0 +1,510 @@
+# baseURI: urn:x-evn-master:geography_ontology
+
+BASE   <urn:x-evn-master:geography_ontology>
+PREFIX metadata: <http://topbraid.org/metadata#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX skosxl: <http://www.w3.org/2008/05/skos-xl#>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX g: <http://topquadrant.com/ns/examples/geography#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX tbgeo: <http://topbraid.org/tbgeo#>
+PREFIX sh: <http://www.w3.org/ns/shacl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dash: <http://datashapes.org/dash#>
+PREFIX swa: <http://topbraid.org/swa#>
+
+<urn:x-evn-master:geography_ontology>
+        owl:imports           <http://topbraid.org/teamworkconstraints>;
+        owl:imports           <http://datashapes.org/graphql>;
+        owl:imports           <http://topbraid.org/skos.shapes>;
+        owl:imports           <http://topbraid.org/tbgeo>;
+        owl:imports           <http://topbraid.org/skos-xl.shapes>;
+        owl:imports           <http://datashapes.org/dash>;
+        rdf:type              owl:Ontology;
+        swa:defaultNamespace  "http://topquadrant.com/ns/examples/geography#";
+        rdfs:label            "TopBraid Examples Geo Ontology";
+        metadata:status       metadata:UnderDevelopmentStatus;
+        rdfs:comment          "Schema definition for Geography Taxonomy.";
+        sh:declare            _:b0;
+        sh:declare            _:b1 .
+
+g:Country-wikidataCountry
+        rdf:type              sh:PropertyShape;
+        sh:order              "20"^^xsd:decimal;
+        sh:path               g:wikidataCountry;
+        sh:name               "wikidata country";
+        sh:maxCount           1;
+        sh:group              skos:MatchingRelationshipsPropertyGroup;
+        sh:nodeKind           sh:IRI;
+        sh:node               g:WikidataCountry;
+        sh:description        "A reference to a wikidata entity for the country.";
+        dash:detailsEndpoint  "https://query.wikidata.org/sparql" .
+
+g:WikidataCountry  rdf:type  sh:NodeShape;
+        rdfs:label    "Wikidata country";
+        rdfs:comment  "A node shape defining the properties of Wikidata countries that we are interested in. Only those properties will be downloaded from the SPARQL endpoint, if requested.";
+        sh:property   _:b2;
+        sh:property   _:b3;
+        sh:property   _:b4 .
+
+g:wikidataCountry  rdf:type  rdf:Property;
+        rdfs:label  "wikidata country" .
+
+_:b5    rdf:rest   rdf:nil;
+        rdf:first  wdt:P1082 .
+
+_:b6    sh:inversePath  g:capital .
+
+g:capital  rdf:type  owl:ObjectProperty;
+        rdfs:label   "капитал"@ru;
+        rdfs:label   "kapitał"@pl;
+        rdfs:label   "hauptstadt"@de;
+        rdfs:label   "capital"@fr;
+        rdfs:label   "capital"@es;
+        rdfs:label   "capital"@en;
+        rdfs:range   g:City;
+        rdfs:domain  g:Country .
+
+_:b7    sh:path   wdt:P1082;
+        sh:nodes  _:b8 .
+
+_:b8    sh:path  g:wikidataCountry .
+
+g:Country-population  rdf:type  sh:PropertyShape;
+        sh:order        "50"^^xsd:decimal;
+        sh:datatype     xsd:integer;
+        sh:path         g:population;
+        sh:name         "population";
+        sh:maxCount     1;
+        sh:group        g:Geopolitical_Characteristics;
+        sh:description  "The number of inhabitants of a country.";
+        sh:values       _:b9 .
+
+_:b9    xsd:integer  _:b10 .
+
+g:Geopolitical_Characteristics
+        rdf:type    sh:PropertyGroup;
+        rdfs:label  "Geopolitical Characteristics";
+        sh:order    1.3 .
+
+g:population  rdf:type  rdf:Property;
+        rdfs:label  "population" .
+
+g:City-fillOpacity  rdf:type  sh:PropertyShape;
+        sh:order        "2"^^xsd:decimal;
+        sh:datatype     xsd:decimal;
+        sh:path         tbgeo:fillOpacity;
+        sh:name         "fill opacity";
+        sh:maxCount     1;
+        sh:group        tbgeo:MapRenderingPropertyGroup;
+        sh:description  "Dynamically computed to be always 1.";
+        sh:values       1.0 .
+
+_:b2    rdf:type        sh:PropertyShape;
+        sh:path         rdfs:label;
+        sh:description  "The name(s) in various languages of a wikidata country.";
+        sh:or           dash:StringOrLangString .
+
+g:Prefecture  rdfs:subClassOf  g:GeoConcept;
+        rdf:type         owl:Class;
+        rdf:type         sh:NodeShape;
+        skos:prefLabel   "Prefecture"@en .
+
+g:GeoConcept  rdfs:subClassOf  skos:Concept;
+        rdfs:subClassOf  tbgeo:MapContext;
+        rdfs:subClassOf  geo:SpatialThing;
+        rdf:type         owl:Class;
+        rdf:type         sh:NodeShape;
+        rdfs:label       "Géographie Concept"@fr;
+        rdfs:label       "Geographie Konzept"@de;
+        rdfs:label       "География Концепция"@ru;
+        rdfs:label       "Geografia Koncepcja"@pl;
+        rdfs:label       "Geo concept"@en;
+        rdfs:label       "Geografía Concept"@es;
+        sh:property      g:GeoConcept-mapFeatures;
+        sh:property      g:GeoConcept-webLink;
+        sh:property      g:GeoConcept-areaKM;
+        sh:property      g:GeoConcept-population;
+        sh:property      g:GeoConcept-image .
+
+g:City  rdfs:subClassOf  g:GeoConcept;
+        rdf:type         owl:Class;
+        rdf:type         sh:NodeShape;
+        rdfs:label       "Ciudad"@es;
+        rdfs:label       "Miasto"@pl;
+        rdfs:label       "City"@en;
+        rdfs:label       "Сити"@ru;
+        rdfs:label       "Stadt"@de;
+        rdfs:label       "Ville"@fr;
+        sh:property      g:City-fillOpacity;
+        sh:property      g:City-capital-inverse;
+        sh:property      g:City-fillColor;
+        sh:property      g:City-wikidataCity;
+        sh:property      g:City-population;
+        sh:property      g:City-symbolScale;
+        sh:property      g:City-symbolPath .
+
+g:City-capital-inverse
+        rdf:type  sh:PropertyShape;
+        sh:path   _:b6;
+        sh:name   "capital of";
+        sh:group  g:Geopolitical_Characteristics;
+        sh:class  g:GeoConcept .
+
+g:City-fillColor  rdf:type  sh:PropertyShape;
+        sh:datatype     xsd:string;
+        sh:path         tbgeo:fillColor;
+        sh:name         "fill color";
+        sh:maxCount     1;
+        sh:group        tbgeo:MapRenderingPropertyGroup;
+        sh:description  "Dynamically computed to be either red or blue depending on whether the city is a capital.";
+        sh:values       _:b11 .
+
+g:City-wikidataCity  rdf:type  sh:PropertyShape;
+        sh:order              "20"^^xsd:decimal;
+        sh:path               g:wikidataCity;
+        sh:name               "wikidata city";
+        sh:maxCount           1;
+        sh:group              skos:MatchingRelationshipsPropertyGroup;
+        sh:nodeKind           sh:IRI;
+        sh:node               g:WikidataCity;
+        sh:description        "A reference to a wikidata entity for the city.";
+        dash:detailsEndpoint  "https://query.wikidata.org/sparql" .
+
+g:City-population  rdf:type  sh:PropertyShape;
+        sh:order        "3"^^xsd:decimal;
+        sh:datatype     xsd:integer;
+        sh:path         g:population;
+        sh:name         "population";
+        sh:maxCount     1;
+        sh:group        g:Geopolitical_Characteristics;
+        sh:description  "A city's population is derived from the population of the corresponding Wikidata entry.";
+        sh:values       _:b12 .
+
+g:City-symbolScale  rdf:type  sh:PropertyShape;
+        sh:path         tbgeo:symbolScale;
+        sh:name         "symbol scale";
+        sh:maxCount     1;
+        sh:group        tbgeo:MapRenderingPropertyGroup;
+        sh:description  "Dynamically computes the size of the circle depending on the City's population.";
+        sh:values       _:b13 .
+
+g:City-symbolPath  rdf:type  sh:PropertyShape;
+        sh:datatype     xsd:string;
+        sh:path         tbgeo:symbolPath;
+        sh:name         "symbol path";
+        sh:maxCount     1;
+        sh:group        tbgeo:MapRenderingPropertyGroup;
+        sh:description  "Dynamically computed as a circle.";
+        sh:values       "m -3,0 a 3,3 0 1,0 6,0 a 3,3 0 1,0 -6,0" .
+
+g:language  rdf:type  owl:DatatypeProperty;
+        rdfs:label   "язык"@ru;
+        rdfs:label   "sprache"@de;
+        rdfs:label   "langue"@fr;
+        rdfs:label   "language"@en;
+        rdfs:label   "język"@pl;
+        rdfs:label   "idioma"@es;
+        rdfs:range   xsd:string;
+        rdfs:domain  g:Country .
+
+g:Country  rdfs:subClassOf  g:GeoConcept;
+        rdf:type         owl:Class;
+        rdf:type         sh:NodeShape;
+        rdfs:label       "Pays"@fr;
+        rdfs:label       "Kraj"@pl;
+        rdfs:label       "страна"@ru;
+        rdfs:label       "País"@es;
+        rdfs:label       "Country"@en;
+        rdfs:label       "Land"@de;
+        sh:property      g:Country-wikidataCountry;
+        sh:property      g:Country-population;
+        sh:property      g:Country-flag;
+        sh:property      g:Country-isoCountryCode2;
+        sh:property      g:Country-capital;
+        sh:property      g:Country-callingCode;
+        sh:property      g:Country-language;
+        sh:property      g:Country-isoCountryCode3 .
+
+g:Province  rdfs:subClassOf  g:GeoConcept;
+        rdf:type         owl:Class;
+        rdf:type         sh:NodeShape;
+        rdfs:label       "провинция"@ru;
+        rdfs:label       "Prowincja"@pl;
+        rdfs:label       "Provinz"@de;
+        rdfs:label       "Provincia"@es;
+        rdfs:label       "Province"@fr;
+        rdfs:label       "Province"@en .
+
+g:Country-flag  rdf:type   sh:PropertyShape;
+        rdfs:comment       "The values of this property are basically copied over from the corresponding property P41 at the Wikidata entity that is linked to this country.";
+        sh:order           "100"^^xsd:decimal;
+        sh:path            g:flag;
+        sh:nodeKind        sh:IRI;
+        sh:values          _:b14;
+        dash:propertyRole  dash:IconRole .
+
+_:b14   sh:path   wdt:P41;
+        sh:nodes  _:b15 .
+
+g:flag  rdf:type      rdf:Property;
+        rdfs:label    "flag";
+        rdfs:comment  "The flag of the country, as delivered by Wikidata." .
+
+g:Concepts  rdf:type  sh:PropertyGroup;
+        rdfs:label  "Concepts";
+        sh:order    1.5 .
+
+g:WikidataCity  rdf:type  sh:NodeShape;
+        rdfs:label    "Wikidata city";
+        rdfs:comment  "A node shape defining the properties of Wikidata cities that we are interested in. Only those properties will be downloaded from the SPARQL endpoint, if requested.";
+        sh:property   _:b16;
+        sh:property   _:b17 .
+
+_:b0    sh:prefix     "g";
+        sh:namespace  "http://topquadrant.com/ns/examples/geography#"^^xsd:anyURI .
+
+g:callingCode  rdf:type  owl:DatatypeProperty;
+        rdfs:label   "вызывающий код"@ru;
+        rdfs:label   "telefonvorwahl"@de;
+        rdfs:label   "telefoniczny kod"@pl;
+        rdfs:label   "l'appel de code"@fr;
+        rdfs:label   "código de llamada"@es;
+        rdfs:label   "calling code"@en;
+        rdfs:range   xsd:integer;
+        rdfs:domain  g:Country .
+
+g:Country-isoCountryCode2
+        rdf:type           sh:PropertyShape;
+        sh:datatype        xsd:string;
+        sh:path            g:isoCountryCode2;
+        sh:maxCount        1;
+        dash:propertyRole  dash:IDRole .
+
+g:isoCountryCode2  rdf:type  owl:DatatypeProperty;
+        rdfs:label    "ISO ALPHA-2 country code";
+        rdfs:comment  "From 2-letter iso code from ISO 30166.";
+        rdfs:range    xsd:string;
+        rdfs:domain   g:Country .
+
+g:Location  rdf:type  sh:PropertyGroup;
+        rdfs:label  "Location";
+        sh:order    1.7 .
+
+g:GeoConcept-mapFeatures
+        rdf:type        sh:PropertyShape;
+        sh:path         tbgeo:mapFeatures;
+        sh:name         "map features";
+        dash:hidden     true;
+        sh:description  "Computes the features to show on Context Maps. The features will simply be the narrower concepts.";
+        sh:values       _:b18;
+        sh:class        g:GeoConcept .
+
+_:b18   sh:path  _:b19 .
+
+skosxl:Label-altLabel-inverse
+        rdf:type  sh:PropertyShape;
+        sh:path   _:b20;
+        sh:name   "alternative label for";
+        sh:group  g:Concepts;
+        sh:class  skos:Concept .
+
+_:b20   sh:inversePath  skosxl:altLabel .
+
+g:isoCountryCode3  rdf:type  owl:DatatypeProperty;
+        rdfs:label    "ISO ALPHA-3 country code";
+        rdfs:comment  "3-letter iso code from United Nations Statistics Division.";
+        rdfs:range    xsd:string;
+        rdfs:domain   g:Country .
+
+g:Continent  rdfs:subClassOf  g:GeoConcept;
+        rdf:type         owl:Class;
+        rdf:type         sh:NodeShape;
+        rdfs:label       "континент"@ru;
+        rdfs:label       "Kontynent"@pl;
+        rdfs:label       "Kontinent"@de;
+        rdfs:label       "Continente"@es;
+        rdfs:label       "Continent"@fr;
+        rdfs:label       "Continent"@en .
+
+_:b11   sh:then  "blue";
+        sh:if    _:b21;
+        sh:else  "red" .
+
+_:b21   sh:exists  _:b22 .
+
+_:b12   sh:path  _:b23 .
+
+g:GeoConcept-webLink  rdf:type  sh:PropertyShape;
+        sh:order           "6"^^xsd:decimal;
+        sh:datatype        xsd:anyURI;
+        sh:path            g:webLink;
+        sh:name            "web link";
+        sh:group           skos:LabelsAndDescriptionPropertyGroup;
+        dash:propertyRole  dash:KeyInfoRole .
+
+_:b15   sh:path  g:wikidataCountry .
+
+g:DurationShape-effectiveTo
+        rdf:type     sh:PropertyShape;
+        sh:datatype  xsd:date;
+        sh:path      g:effectiveTo;
+        sh:name      "effective to";
+        sh:maxCount  1 .
+
+_:b3    rdf:type        sh:PropertyShape;
+        sh:path         wdt:P41;
+        sh:name         "flag";
+        sh:nodeKind     sh:IRI;
+        sh:description  "An image of the country's flag." .
+
+_:b22   sh:path  _:b24 .
+
+g:State  rdfs:subClassOf  g:GeoConcept;
+        rdf:type         owl:Class;
+        rdf:type         sh:NodeShape;
+        rdfs:label       "Stan"@pl;
+        rdfs:label       "государство"@ru;
+        rdfs:label       "Staat"@de;
+        rdfs:label       "Êtat"@fr;
+        rdfs:label       "State"@en;
+        rdfs:label       "Estado"@es;
+        sh:property      g:State-capital .
+
+g:State-capital  rdf:type  sh:PropertyShape;
+        sh:path   g:capital;
+        sh:group  g:Geopolitical_Characteristics;
+        sh:class  g:City .
+
+g:Country-capital  rdf:type  sh:PropertyShape;
+        sh:path            g:capital;
+        sh:group           g:Geopolitical_Characteristics;
+        dash:propertyRole  dash:KeyInfoRole;
+        sh:class           g:City;
+        dash:reifiableBy   g:DateDurationShape .
+
+g:DateDurationShape  rdf:type  sh:NodeShape;
+        rdfs:label   "Date duration shape";
+        sh:property  g:DurationShape-effectiveTo;
+        sh:property  g:DurationShape-effectiveFrom .
+
+_:b24   sh:inversePath  g:capital .
+
+_:b13   sh:select    "\n\t\tSELECT ?scale\n\t\tWHERE {\n\t\t\t$this g:wikidataCity/wdt:P1082 ?population .\n\t\t\tBIND (IF(?population > 1000000, 4, IF(?population > 500000, 3, IF(?population > 100000, 2, 1))) AS ?scale) .\n\t\t}";
+        sh:prefixes  <urn:x-evn-master:geography_ontology> .
+
+_:b16   rdf:type        sh:PropertyShape;
+        sh:path         rdfs:label;
+        sh:description  "The name(s) in various languages of a wikidata city.";
+        sh:or           dash:StringOrLangString .
+
+skosxl:Label  sh:property  skosxl:Label-altLabel-inverse .
+
+g:Country-callingCode
+        rdf:type     sh:PropertyShape;
+        sh:datatype  xsd:integer;
+        sh:path      g:callingCode;
+        sh:maxCount  1;
+        sh:group     g:Geopolitical_Characteristics .
+
+g:Country-language  rdf:type  sh:PropertyShape;
+        sh:datatype  xsd:string;
+        sh:path      g:language;
+        sh:group     g:Geopolitical_Characteristics .
+
+g:Country-isoCountryCode3
+        rdf:type           sh:PropertyShape;
+        sh:datatype        xsd:string;
+        sh:path            g:isoCountryCode3;
+        sh:maxCount        1;
+        dash:propertyRole  dash:IDRole .
+
+_:b4    rdf:type        sh:PropertyShape;
+        sh:datatype     xsd:decimal;
+        sh:path         wdt:P1082;
+        sh:name         "population (wikidata)";
+        sh:description  "The wikidata property representing the population of a place." .
+
+_:b17   rdf:type        sh:PropertyShape;
+        sh:datatype     xsd:decimal;
+        sh:path         wdt:P1082;
+        sh:name         "population (wikidata)";
+        sh:description  "The wikidata property representing the population of a place." .
+
+g:GeoConcept-areaKM  rdf:type  sh:PropertyShape;
+        sh:datatype  xsd:decimal;
+        sh:path      g:areaKM;
+        sh:maxCount  1;
+        sh:group     g:Geopolitical_Characteristics .
+
+g:areaKM  rdf:type   owl:DatatypeProperty;
+        rdfs:label   "площадь"@ru;
+        rdfs:label   "zona (KM)"@es;
+        rdfs:label   "région (KM)"@fr;
+        rdfs:label   "obszar (KM)"@pl;
+        rdfs:label   "bereich (KM)"@de;
+        rdfs:label   "area (KM)"@en;
+        rdfs:range   xsd:decimal;
+        rdfs:domain  g:GeoConcept .
+
+g:DurationShape-effectiveFrom
+        rdf:type     sh:PropertyShape;
+        sh:datatype  xsd:date;
+        sh:path      g:effectiveFrom;
+        sh:name      "effective from";
+        sh:maxCount  1 .
+
+_:b10   rdf:rest   rdf:nil;
+        rdf:first  _:b7 .
+
+_:b23   rdf:rest   _:b5;
+        rdf:first  g:wikidataCity .
+
+g:GeoConcept-population
+        rdf:type        sh:PropertyShape;
+        sh:order        "1"^^xsd:decimal;
+        sh:datatype     xsd:integer;
+        sh:path         g:population;
+        sh:name         "population";
+        sh:maxCount     1;
+        sh:group        g:Geopolitical_Characteristics;
+        sh:description  "The number of inhabitants (often a rough estimate)." .
+
+g:GeoConcept-image  rdf:type  sh:PropertyShape;
+        sh:order           "7"^^xsd:decimal;
+        sh:datatype        xsd:anyURI;
+        sh:path            g:image;
+        sh:name            "image";
+        sh:maxCount        1;
+        sh:group           skos:LabelsAndDescriptionPropertyGroup;
+        sh:description     "The URL of an image for the concept.";
+        dash:propertyRole  dash:KeyInfoRole;
+        dash:viewer        dash:ImageViewer .
+
+g:Territory  rdfs:subClassOf  g:GeoConcept;
+        rdf:type         owl:Class;
+        rdf:type         sh:NodeShape;
+        rdfs:label       "территория"@ru;
+        rdfs:label       "Terytorium"@pl;
+        rdfs:label       "Territory"@en;
+        rdfs:label       "Territorio"@es;
+        rdfs:label       "Territoire"@fr;
+        rdfs:label       "Gebiet"@de .
+
+g:Island  rdfs:subClassOf  g:GeoConcept;
+        rdf:type         owl:Class;
+        rdf:type         sh:NodeShape;
+        rdfs:label       "остров"@ru;
+        rdfs:label       "Île"@fr;
+        rdfs:label       "Wyspa"@pl;
+        rdfs:label       "Island"@en;
+        rdfs:label       "Isla"@es;
+        rdfs:label       "Insel"@de .
+
+_:b1    sh:prefix     "wdt";
+        sh:namespace  "http://www.wikidata.org/prop/direct/"^^xsd:anyURI .
+
+_:b19   sh:inversePath  skos:broader .
